@@ -18,7 +18,8 @@ import { InputControl } from "../../components/admin";
 const FormProduct = () => {
   const { id } = useParams();
 
-  console.log(id);
+  //! check param id
+  // console.log(id);
   return (
     <Layout>
       <Box>
@@ -27,9 +28,9 @@ const FormProduct = () => {
             {id ? "Edit Product" : "Add Product"}
           </Text>
         </Box>
-        <Box my="10">
-          <Box as="form">
-            <InputControl title="Thumbnails" space="md">
+        <Box my="10" bgColor="white" shadow="md" rounded="xl">
+          <Box as="form" p="5">
+            <InputControl title="Thumbnails" space="sm">
               <Flex
                 w="52"
                 h="52"
@@ -114,7 +115,11 @@ const FormProduct = () => {
             </InputControl>
 
             <InputControl title="Title" space="sm">
-              <Input type="text" placeholder="Product name" />
+              <Input
+                type="text"
+                placeholder="Product name"
+                background="white"
+              />
             </InputControl>
             <InputControl title="Price" space="sm">
               <Input type="number" placeholder="Price" />
@@ -124,7 +129,11 @@ const FormProduct = () => {
             </InputControl>
 
             <Box>
-              <Button colorScheme="facebook">Save</Button>
+              {id ? (
+                <Button colorScheme="facebook">Update</Button>
+              ) : (
+                <Button colorScheme="facebook">Save</Button>
+              )}
             </Box>
           </Box>
         </Box>

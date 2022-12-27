@@ -1,18 +1,22 @@
 import DataTable from "react-data-table-component";
-import { ButtonGroup, Button, Text, Box, Flex } from "@chakra-ui/react";
+import { ButtonGroup, Button, Text, Box } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 import Layout from "./Layout";
 
 const column = [
   {
-    name: "Title",
-    selector: (row) => row.title,
+    name: "Name",
+    selector: (row) => row.name,
     sortable: true,
   },
   {
-    name: "Year",
-    selector: (row) => row.year,
+    name: "Email",
+    selector: (row) => row.email,
+  },
+  {
+    name: "Role",
+    selector: (row) => row.role,
   },
   {
     name: "Edit",
@@ -20,7 +24,7 @@ const column = [
       <>
         <ButtonGroup size="sm" isAttached variant="outline">
           <Button>
-            <Link to={`/product/edit/${row.id}`}>Edit</Link>
+            <Link to={`/user/edit/${row.id}`}>Edit</Link>
           </Button>
           <Button
             color="red.300"
@@ -39,38 +43,37 @@ const column = [
 const data = [
   {
     id: 1,
-    title: "Beetlejuice",
-    year: "1988",
+    name: "Superadmin",
+    email: "admin@admin.com",
+    role: "admin",
   },
   {
-    id: 2,
-    title: "Ghostbusters",
-    year: "1984",
+    id: 1,
+    name: "User",
+    email: "user@user.com",
+    role: "user",
+  },
+  {
+    id: 1,
+    name: "User1",
+    email: "user@user.com",
+    role: "user",
   },
 ];
 
-const ListProduct = () => {
+const ListUser = () => {
   return (
     <Layout>
       <Box>
-        <Flex
-          flexDir="row"
-          justifyItems="center"
-          justifyContent="space-between"
-        >
+        <Box>
           <Text as="h1" fontSize="2xl">
-            Daftar Barang
+            Daftar User
           </Text>
-        </Flex>
+        </Box>
 
         <Box my="10" shadow="md" rounded="lg" p="5" bg="white">
           <Box mb="5">
-            <Button
-              size="sm"
-              colorScheme="linkedin"
-              as={Link}
-              to="/product/add"
-            >
+            <Button size="sm" colorScheme="linkedin" as={Link} to="/user/add">
               Add Product
             </Button>
           </Box>
@@ -81,4 +84,4 @@ const ListProduct = () => {
   );
 };
 
-export default ListProduct;
+export default ListUser;

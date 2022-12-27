@@ -1,9 +1,15 @@
+import { Box, Text } from "@chakra-ui/react";
+
 import Layout from "./Layout";
 
 const Dashboard = () => {
   return (
     <Layout>
-      <h1>Hello Wolrd</h1>
+      <Box>
+        <Text as="h1" fontSize="2xl">
+          Daftar User
+        </Text>
+      </Box>
     </Layout>
   );
 };

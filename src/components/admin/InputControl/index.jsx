@@ -11,7 +11,7 @@ const InputControl = ({ title, space = "md", children, ...rest }) => {
   const sizeSpace = (space) => {
     switch (space) {
       case "sm":
-        return "6";
+        return "2";
       case "md":
         return "12";
       case "lg":
@@ -24,7 +24,7 @@ const InputControl = ({ title, space = "md", children, ...rest }) => {
 
   return (
     <FormControl my={sizeSpace(space)} {...rest}>
-      <FormLabel>{title}</FormLabel>
+      <FormLabel textTransform="capitalize">{title}</FormLabel>
       {children}
     </FormControl>
   );

@@ -80,14 +80,13 @@ const SidebarContent = (props) => {
           Daftart Produk
         </NavItem>
 
-        <NavItem>Daftart User</NavItem>
-        <NavItem onClick={integrations.onToggle}>Integrations</NavItem>
+        <NavItem as={Link} to="/users">
+          Daftart User
+        </NavItem>
+        <NavItem onClick={integrations.onToggle}>Setting</NavItem>
         <Collapse in={integrations.isOpen}>
           <NavItem pl="12" py="2">
-            Shopify
-          </NavItem>
-          <NavItem pl="12" py="2">
-            Slack
+            Logout
           </NavItem>
         </Collapse>
       </Flex>
