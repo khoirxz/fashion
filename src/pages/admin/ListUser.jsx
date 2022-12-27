@@ -24,7 +24,7 @@ const column = [
       <>
         <ButtonGroup size="sm" isAttached variant="outline">
           <Button>
-            <Link to={`/user/edit/${row.id}`}>Edit</Link>
+            <Link to={`/dashboard/user/edit/${row.id}`}>Edit</Link>
           </Button>
           <Button
             color="red.300"
@@ -48,13 +48,13 @@ const data = [
     role: "admin",
   },
   {
-    id: 1,
+    id: 2,
     name: "User",
     email: "user@user.com",
     role: "user",
   },
   {
-    id: 1,
+    id: 3,
     name: "User1",
     email: "user@user.com",
     role: "user",
@@ -73,7 +73,12 @@ const ListUser = () => {
 
         <Box my="10" shadow="md" rounded="lg" p="5" bg="white">
           <Box mb="5">
-            <Button size="sm" colorScheme="linkedin" as={Link} to="/user/add">
+            <Button
+              size="sm"
+              colorScheme="linkedin"
+              as={Link}
+              to="/dashboard/user/add"
+            >
               Add Product
             </Button>
           </Box>

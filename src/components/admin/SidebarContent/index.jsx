@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Text, Collapse, useDisclosure, Box, Flex } from "@chakra-ui/react";
 
-const SidebarContent = (props) => {
+const SidebarContent = ({ handleLogout, ...rest }) => {
   const integrations = useDisclosure();
 
   const NavItem = ({ children, ...rest }) => {
@@ -52,12 +52,12 @@ const SidebarContent = (props) => {
       color="inherit"
       borderRightWidth="1px"
       w="60"
-      {...props}
+      {...rest}
     >
       <Flex px="4" py="5" align="center">
         <Text
           as={Link}
-          to="/"
+          to="/dashboard"
           fontSize="2xl"
           ml="2"
           color="brand.500"
@@ -76,17 +76,17 @@ const SidebarContent = (props) => {
         color="gray.600"
         aria-label="Main Navigation"
       >
-        <NavItem as={Link} to="/products">
+        <NavItem as={Link} to="/dashboard/products">
           Daftart Produk
         </NavItem>
 
-        <NavItem as={Link} to="/users">
+        <NavItem as={Link} to="/dashboard/users">
           Daftart User
         </NavItem>
         <NavItem onClick={integrations.onToggle}>Setting</NavItem>
         <Collapse in={integrations.isOpen}>
           <NavItem pl="12" py="2">
-            Logout
+            <Text onClick={() => handleLogout()}>Logout</Text>
           </NavItem>
         </Collapse>
       </Flex>

@@ -7,23 +7,9 @@ import { FormControl, FormLabel } from "@chakra-ui/react";
  * @param children element input
  * @param rest if add some style
  */
-const InputControl = ({ title, space = "md", children, ...rest }) => {
-  const sizeSpace = (space) => {
-    switch (space) {
-      case "sm":
-        return "2";
-      case "md":
-        return "12";
-      case "lg":
-        return "16";
-
-      default:
-        return "10";
-    }
-  };
-
+const InputControl = ({ title, children, ...rest }) => {
   return (
-    <FormControl my={sizeSpace(space)} {...rest}>
+    <FormControl {...rest}>
       <FormLabel textTransform="capitalize">{title}</FormLabel>
       {children}
     </FormControl>

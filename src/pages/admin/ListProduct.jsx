@@ -20,7 +20,7 @@ const column = [
       <>
         <ButtonGroup size="sm" isAttached variant="outline">
           <Button>
-            <Link to={`/product/edit/${row.id}`}>Edit</Link>
+            <Link to={`/dashboard/product/edit/${row.id}`}>Edit</Link>
           </Button>
           <Button
             color="red.300"
@@ -69,7 +69,7 @@ const ListProduct = () => {
               size="sm"
               colorScheme="linkedin"
               as={Link}
-              to="/product/add"
+              to="/dashboard/product/add"
             >
               Add Product
             </Button>

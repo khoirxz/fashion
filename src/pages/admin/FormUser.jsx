@@ -28,7 +28,7 @@ const FormUser = () => {
             <InputControl title="role" space="sm">
               <Select placeholder="Select role">
                 <option value="admin">Admin</option>
-                <option value="user">user</option>
+                <option value="user">User</option>
               </Select>
             </InputControl>
 
