@@ -30,7 +30,7 @@ const FormProduct = () => {
         </Box>
         <Box my="10" bgColor="white" shadow="md" rounded="xl">
           <Box as="form" p="5">
-            <InputControl title="Thumbnails" space="sm">
+            <InputControl title="Thumbnails" my="3">
               <Flex
                 w="52"
                 h="52"
@@ -114,17 +114,17 @@ const FormProduct = () => {
               </Flex>
             </InputControl>
 
-            <InputControl title="Title" space="sm">
+            <InputControl title="Title" my="3">
               <Input
                 type="text"
                 placeholder="Product name"
                 background="white"
               />
             </InputControl>
-            <InputControl title="Price" space="sm">
+            <InputControl title="Price" my="3">
               <Input type="number" placeholder="Price" />
             </InputControl>
-            <InputControl title="Description" space="sm">
+            <InputControl title="Description" my="3">
               <Textarea placeholder="you@example.com" mt={1} rows={3} />
             </InputControl>
 

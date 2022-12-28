@@ -9,6 +9,8 @@ import ListUser from "./pages/admin/ListUser";
 import Login from "./pages/admin/Login";
 //! public pages
 import Home from "./pages/public/Home";
+//! utils
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 const App = () => {
   return (
@@ -20,8 +22,22 @@ const App = () => {
           <Route path="/dashboard/products" element={<ListProduct />} />
           <Route path="/dashboard/product/edit/:id" element={<FormProduct />} />
           <Route path="/dashboard/product/add" element={<FormProduct />} />
-          <Route path="/dashboard/users" element={<ListUser />} />
-          <Route path="/dashboard/user/add" element={<FormUser />} />
+          <Route
+            path="/dashboard/users"
+            element={
+              <ProtectedRoute>
+                <ListUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/user/add"
+            element={
+              <ProtectedRoute>
+                <FormUser />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/dashboard/user/edit/:id" element={<FormUser />} />
           <Route path="/" element={<Home />} />
         </Routes>

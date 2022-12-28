@@ -53,6 +53,7 @@ const Layout = ({ children }) => {
         <>
           <SidebarContent
             handleLogout={handleLogout}
+            role={user?.role}
             display={{
               base: "none",
               md: "unset",
@@ -68,6 +69,7 @@ const Layout = ({ children }) => {
               <SidebarContent
                 w="full"
                 borderRight="none"
+                role={user?.role}
                 handleLogout={handleLogout}
               />
             </DrawerContent>

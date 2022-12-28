@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Text, Collapse, useDisclosure, Box, Flex } from "@chakra-ui/react";
 
-const SidebarContent = ({ handleLogout, ...rest }) => {
+const SidebarContent = ({ role, handleLogout, ...rest }) => {
   const integrations = useDisclosure();
 
   const NavItem = ({ children, ...rest }) => {
@@ -79,10 +79,12 @@ const SidebarContent = ({ handleLogout, ...rest }) => {
         <NavItem as={Link} to="/dashboard/products">
           Daftart Produk
         </NavItem>
+        {role === "admin" && (
+          <NavItem as={Link} to="/dashboard/users">
+            Daftart User
+          </NavItem>
+        )}
 
-        <NavItem as={Link} to="/dashboard/users">
-          Daftart User
-        </NavItem>
         <NavItem onClick={integrations.onToggle}>Setting</NavItem>
         <Collapse in={integrations.isOpen}>
           <NavItem pl="12" py="2">
