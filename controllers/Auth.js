@@ -6,7 +6,7 @@ export const Login = async (req, res) => {
   if (!user)
     return res.status(409).json({
       status: "error",
-      message: "user not found",
+      message: "email and password is wrong!",
     });
 
   const match = await argon2.verify(user.password, req.body.password);

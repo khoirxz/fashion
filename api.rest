@@ -1,3 +1,5 @@
+#! ADD USER
+// role : admin, user
 POST http://localhost:5000/user
 Content-Type: application/json
 
@@ -8,6 +10,7 @@ Content-Type: application/json
     "confirmPassword": "123456",
     "role": "user"
 }
+
 
 ###
 // fech all user
@@ -30,10 +33,22 @@ Content-Type: application/json
 ###
 // delete user
 DELETE http://localhost:5000/user/63a7e1a23cae12741e23ed59
-
 ###
+
+
+
 #!AUTH ROUTE
 // login 
+#? admin login
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email": "admin@admin.com",
+    "password": "123456"
+}
+###
+#? user login
 POST http://localhost:5000/login
 Content-Type: application/json
 
