@@ -38,7 +38,13 @@ export const fetchUser = async (req, res) => {
       password: 0,
     });
 
-    res.status(201).json(user);
+    if (user === null)
+      return res.status(500).json({
+        status: "error",
+        message: "something wrong",
+      });
+
+    return res.status(201).json(user);
   } catch (error) {
     res.status(500).json({
       status: "error",
@@ -85,6 +91,12 @@ export const updateUser = async (req, res) => {
     return res.status(409).json({
       status: "error",
       message: "user not found",
+    });
+
+  if (_id !== user._id)
+    return res.status(409).json({
+      status: "error",
+      message: "Unauthorize action",
     });
 
   if (password !== confirmPassword)
@@ -137,6 +149,12 @@ export const deleteUser = async (req, res) => {
     return res.status(409).json({
       status: "error",
       message: "user not found",
+    });
+
+  if (id === user._id)
+    return res.status(409).json({
+      status: "error",
+      message: "Unauthorize action",
     });
 
   try {

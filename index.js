@@ -8,6 +8,8 @@ import mongoStore from "connect-mongo";
 import UserRoute from "./routes/UserRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+// public router
+import PublicRoute from "./routes/PublicRouter.js";
 
 dotenv.config();
 
@@ -38,6 +40,8 @@ app.use(express.json());
 app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
+// public router set
+app.use(PublicRoute);
 app.get("/", (req, res) => {
   res.send("Hello World");
   res.end();
