@@ -4,8 +4,8 @@ POST http://localhost:5000/user
 Content-Type: application/json
 
 {
-    "name": "user",
-    "email": "user@user.com",
+    "name": "user1",
+    "email": "user1@user1.com",
     "password": "123456",
     "confirmPassword": "123456",
     "role": "user"
@@ -17,7 +17,7 @@ Content-Type: application/json
 GET http://localhost:5000/users
 ###
 // fech sigle user
-GET http://localhost:5000/user/63a7dcff3e1c2260772c3c74
+GET http://localhost:5000/user/63bd702c512aae2b9648fe88
 ###
 // edit user
 PATCH http://localhost:5000/user/63a7dcff3e1c2260772c3c74
@@ -53,7 +53,7 @@ POST http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email": "user@user.com",
+    "email": "admin@admin.com",
     "password": "123456"
 }
 ###
@@ -75,12 +75,12 @@ Content-Type: application/json
 
 {
     "title": "Laptop",
-    "price": 18000000,
+    "price": 20000000,
     "description": "Laptop gaming dengan kualitas"
 }
 ###
 // get one product
-GET http://localhost:5000/product/63a85f15ece106a25eec99cc
+GET http://localhost:5000/product/63bbc64eaa14b7d2c88f41f3
 ###
 // update product
 PATCH http://localhost:5000/product/63a85f15ece106a25eec99cc

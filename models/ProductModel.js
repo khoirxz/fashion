@@ -5,6 +5,8 @@ const productSchema = Schema({
   price: Number,
   thumbnail: String,
   description: String,
+  createdAt: { type: Date },
+  modifiedAt: { type: Date },
   published: {
     userId: Schema.Types.ObjectId,
     name: String,

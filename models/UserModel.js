@@ -5,6 +5,8 @@ const userSchema = Schema({
   email: String,
   password: String,
   role: String,
+  createdAt: { type: Date },
+  modifiedAt: { type: Date },
 });
 
 const UserModel = mongoose.model("userSchema", userSchema);

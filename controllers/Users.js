@@ -3,13 +3,23 @@ import argon2 from "argon2";
 
 export const fetchAllUser = async (req, res) => {
   try {
-    const response = await UserModel.find(
-      {},
-      {
-        _id: 0,
-        password: 0,
-      }
-    );
+    let response;
+    if (req.role === "admin") {
+      response = await UserModel.find(
+        {},
+        {
+          password: 0,
+        }
+      );
+    } else {
+      response = await UserModel.find(
+        {},
+        {
+          _id: 0,
+          password: 0,
+        }
+      );
+    }
 
     res.status(201).json(response);
   } catch (error) {
@@ -37,7 +47,7 @@ export const fetchUser = async (req, res) => {
   }
 };
 export const createUser = async (req, res) => {
-  const { name, email, password, confirmPassword, role } = req.body;
+  const { name, email, password, confirmPassword, role, createdAt } = req.body;
 
   if (password !== confirmPassword)
     return res.status(500).json({
@@ -52,6 +62,7 @@ export const createUser = async (req, res) => {
     email: email,
     password: hashPassword,
     role: role,
+    createdAt: createdAt,
   });
   try {
     await newData.save();
@@ -66,7 +77,7 @@ export const createUser = async (req, res) => {
 };
 export const updateUser = async (req, res) => {
   const { id: _id } = req.params;
-  const { name, email, password, confirmPassword, role } = req.body;
+  const { name, email, password, confirmPassword, role, modifiedAt } = req.body;
   let hashedPassword;
 
   const user = await UserModel.findById(_id);
@@ -95,6 +106,7 @@ export const updateUser = async (req, res) => {
     email: email,
     password: hashedPassword,
     role: role,
+    modifiedAt: modifiedAt,
   };
 
   try {

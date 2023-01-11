@@ -4,9 +4,11 @@ export const fetchAllProduct = async (req, res) => {
   try {
     let response;
     if (req.role === "admin") {
-      response = await ProductModel.find();
+      response = await ProductModel.find().sort({ createdAt: -1 });
     } else {
-      response = await ProductModel.find({ "published.userId": req.userId });
+      response = await ProductModel.find({
+        "published.userId": req.userId,
+      }).sort({ createdAt: -1 });
     }
     res.status(200).json(response);
   } catch (error) {
@@ -31,13 +33,15 @@ export const fetchProduct = async (req, res) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    res.status(500).json({ status: "error", message: "invalid id" });
   }
 };
 export const createProduct = async (req, res) => {
-  const { title, price, description } = req.body;
+  const { title, price, description, thumbnail, createdAt } = req.body;
 
   const newData = new ProductModel({
+    thumbnail,
+    createdAt,
     title,
     price,
     description,
@@ -64,11 +68,11 @@ export const updateProduct = async (req, res) => {
   try {
     const data = await ProductModel.findOne({ _id });
 
-    const { title, price, description } = req.body;
+    const { title, price, description, modifiedAt } = req.body;
     if (req.role === "admin") {
       await ProductModel.findByIdAndUpdate(
         _id,
-        { title, price, description, id: _id },
+        { title, price, description, id: _id, modifiedAt },
         { new: true }
       );
     } else {
