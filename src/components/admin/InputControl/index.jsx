@@ -3,7 +3,6 @@ import { FormControl, FormLabel } from "@chakra-ui/react";
 /**
  *
  * @param title Value for Label
- * @param space Margin Top and Bottom
  * @param children element input
  * @param rest if add some style
  */
