@@ -94,3 +94,7 @@ Content-Type: application/json
 ###
 // delete product
 DELETE http://localhost:5000/product/63a863dc1d7128d58af3be6d
+
+###
+// public route
+GET http://localhost:5000/public/products
