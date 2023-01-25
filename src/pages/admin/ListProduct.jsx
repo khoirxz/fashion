@@ -30,6 +30,20 @@ const ListProduct = () => {
   const DataTableList = () => {
     return (
       <DataTable
+        pagination
+        customStyles={{
+          headCells: {
+            style: {
+              fontWeight: "normal",
+              color: "#6c6c6c",
+            },
+          },
+          rows: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
+        }}
         columns={[
           {
             name: "Title",
@@ -38,7 +52,8 @@ const ListProduct = () => {
           },
           {
             name: "Price",
-            selector: (row) => row.price,
+            selector: (row) => "Rp." + row.price,
+            sortable: true,
           },
           {
             name: "Upload",
@@ -79,16 +94,21 @@ const ListProduct = () => {
           justifyItems="center"
           justifyContent="space-between"
         >
-          <Text as="h1" fontSize="2xl">
-            Daftar Barang
+          <Text as="h1" fontSize="3xl" fontWeight="bold">
+            Daftar Produk
           </Text>
         </Flex>
 
-        <Box my="10" shadow="md" rounded="lg" p="5" bg="white">
+        <Box my="10" p="5" bg="white">
           <Box mb="5">
             <Button
               size="sm"
-              colorScheme="linkedin"
+              bgColor="black"
+              color="white"
+              borderRadius="none"
+              _hover={{
+                bgColor: "blackAlpha.700",
+              }}
               as={Link}
               to="/dashboard/product/add"
             >

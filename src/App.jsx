@@ -9,6 +9,7 @@ import ListUser from "./pages/admin/ListUser";
 import Login from "./pages/admin/Login";
 //! public pages
 import Home from "./pages/public/Home";
+import ProductPage from "./pages/public/ProductPage";
 //! utils
 import ProtectedRoute from "./utils/ProtectedRoute";
 
@@ -39,7 +40,9 @@ const App = () => {
             }
           />
           <Route path="/dashboard/user/edit/:id" element={<FormUser />} />
+          {/* public */}
           <Route path="/" element={<Home />} />
+          <Route path="/product/:title" element={<ProductPage />} />
         </Routes>
       </BrowserRouter>
     </div>

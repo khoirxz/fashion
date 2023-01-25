@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Text, Collapse, useDisclosure, Box, Flex } from "@chakra-ui/react";
 
-const SidebarContent = ({ role, handleLogout, ...rest }) => {
+const SidebarContent = ({ role, id, handleLogout, ...rest }) => {
   const integrations = useDisclosure();
 
   const NavItem = ({ children, ...rest }) => {
@@ -11,17 +11,13 @@ const SidebarContent = ({ role, handleLogout, ...rest }) => {
         px="4"
         pl="4"
         py="3"
+        mx={{ base: 0, lg: "10px" }}
+        my={{ base: 0, lg: "5px" }}
         cursor="pointer"
         color="inherit"
-        _dark={{
-          color: "gray.400",
-        }}
         _hover={{
-          bg: "gray.100",
-          _dark: {
-            bg: "gray.900",
-          },
-          color: "gray.900",
+          bg: "#3a3333",
+          color: "white",
         }}
         role="group"
         fontWeight="semibold"
@@ -44,12 +40,7 @@ const SidebarContent = ({ role, handleLogout, ...rest }) => {
       pb="10"
       overflowX="hidden"
       overflowY="auto"
-      bg="white"
-      _dark={{
-        bg: "gray.800",
-      }}
       border
-      color="inherit"
       borderRightWidth="1px"
       w="60"
       {...rest}
@@ -60,20 +51,16 @@ const SidebarContent = ({ role, handleLogout, ...rest }) => {
           to="/dashboard"
           fontSize="2xl"
           ml="2"
-          color="brand.500"
-          _dark={{
-            color: "white",
-          }}
           fontWeight="semibold"
         >
           Dashboard
         </Text>
       </Flex>
+
       <Flex
         direction="column"
         as="nav"
         fontSize="sm"
-        color="gray.600"
         aria-label="Main Navigation"
       >
         <NavItem as={Link} to="/dashboard/products">
@@ -86,7 +73,15 @@ const SidebarContent = ({ role, handleLogout, ...rest }) => {
         )}
 
         <NavItem onClick={integrations.onToggle}>Setting</NavItem>
+
         <Collapse in={integrations.isOpen}>
+          {role !== "admin" && (
+            <NavItem pl="12" py="2">
+              <Text as={Link} to={`/dashboard/user/edit/${id}`}>
+                Account
+              </Text>
+            </NavItem>
+          )}
           <NavItem pl="12" py="2">
             <Text onClick={() => handleLogout()}>Logout</Text>
           </NavItem>

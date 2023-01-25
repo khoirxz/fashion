@@ -37,23 +37,17 @@ const Layout = ({ children }) => {
     dispatch(LogOut());
     dispatch(reset());
     navigate("/login");
-    console.log(1);
+    // console.log(1);
   };
 
   return (
-    <Box
-      as="section"
-      bg="gray.50"
-      _dark={{
-        bg: "gray.700",
-      }}
-      minH="100vh"
-    >
+    <Box as="section" bg="white" minH="100vh" fontFamily="DM sans">
       {!isLoading ? (
         <>
           <SidebarContent
             handleLogout={handleLogout}
             role={user?.role}
+            id={user?._id}
             display={{
               base: "none",
               md: "unset",
@@ -70,6 +64,7 @@ const Layout = ({ children }) => {
                 w="full"
                 borderRight="none"
                 role={user?.role}
+                id={user?._id}
                 handleLogout={handleLogout}
               />
             </DrawerContent>
@@ -88,9 +83,6 @@ const Layout = ({ children }) => {
               w="full"
               px="4"
               bg="white"
-              _dark={{
-                bg: "gray.800",
-              }}
               borderBottomWidth="1px"
               color="inherit"
               h="14"

@@ -18,6 +18,7 @@ const FormUser = () => {
   const [loading, setLoading] = useState(false);
 
   const { data } = useSelector((state) => state.users);
+  const { user } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -50,13 +51,17 @@ const FormUser = () => {
       try {
         const response = await axios.get(`http://localhost:5000/user/${id}`);
 
+        if (response.status !== 201 || response.status === 500)
+          return navigate("/dashboard");
+
         setName(response.data.name);
         setEmail(response.data.email);
         setRole(response.data.role);
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        console.log(error);
+        navigate("/dashboard");
+        // console.log(error);
       }
     };
 

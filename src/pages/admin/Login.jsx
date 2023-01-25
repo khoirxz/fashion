@@ -10,6 +10,8 @@ import { InputControl } from "../../components/admin";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formState, setFormState] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isError, isLoading, isSuccess, message } = useSelector(
@@ -25,7 +27,11 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(LoginUser({ email, password }));
+    if (email === "" ?? password === "") {
+      setFormState((state) => !state);
+    } else {
+      dispatch(LoginUser({ email, password }));
+    }
 
     // console.table({ email, password });
   };
@@ -38,28 +44,36 @@ const Login = () => {
       flexDir="column"
       justify="center"
       alignItems="center"
+      fontFamily="DM Sans"
     >
       <Box
         as="form"
-        maxW="400px"
+        maxW="350px"
+        w="full"
         p="8"
         bg="white"
         display="flex"
         flexDir="column"
-        shadow="md"
-        rounded="md"
+        border="1px"
+        borderColor="blackAlpha.500"
         onSubmit={handleSubmit}
       >
         <InputControl title="Email" mb="5">
           <Input
             placeholder="Email"
             type="email"
+            borderRadius="none"
+            border="1px"
+            borderColor={!formState ? "blackAlpha.500" : "red.500"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </InputControl>
         <InputControl title="Password" mb="5">
           <Input
+            borderRadius="none"
+            border="1px"
+            borderColor={!formState ? "blackAlpha.500" : "red.500"}
             placeholder="Password"
             type="password"
             value={password}
@@ -71,7 +85,16 @@ const Login = () => {
             Login
           </Button>
         ) : (
-          <Button type="submit" colorScheme="facebook">
+          <Button
+            type="submit"
+            border="1px"
+            borderRadius="none"
+            bgColor="black"
+            color="white"
+            _hover={{
+              bgColor: "blackAlpha.800",
+            }}
+          >
             Login
           </Button>
         )}

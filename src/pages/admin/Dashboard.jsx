@@ -6,8 +6,8 @@ const Dashboard = () => {
   return (
     <Layout>
       <Box>
-        <Text as="h1" fontSize="2xl">
-          Daftar User
+        <Text as="h1" fontSize="3xl" fontWeight="bold">
+          Welcome
         </Text>
       </Box>
     </Layout>

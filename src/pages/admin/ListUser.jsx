@@ -20,6 +20,20 @@ const ListUser = () => {
   const DataTableUser = () => {
     return (
       <DataTable
+        pagination
+        customStyles={{
+          headCells: {
+            style: {
+              fontWeight: "normal",
+              color: "#6c6c6c",
+            },
+          },
+          rows: {
+            style: {
+              fontWeight: "bold",
+            },
+          },
+        }}
         columns={[
           {
             name: "Name",
@@ -77,16 +91,21 @@ const ListUser = () => {
     <Layout>
       <Box>
         <Box>
-          <Text as="h1" fontSize="2xl">
+          <Text as="h1" fontSize="3xl" fontWeight="bold">
             Daftar User
           </Text>
         </Box>
 
-        <Box my="10" shadow="md" rounded="lg" p="5" bg="white">
+        <Box my="10" p="5" bg="white">
           <Box mb="5">
             <Button
               size="sm"
-              colorScheme="linkedin"
+              bgColor="black"
+              color="white"
+              borderRadius="none"
+              _hover={{
+                bgColor: "blackAlpha.700",
+              }}
               as={Link}
               to="/dashboard/user/add"
             >

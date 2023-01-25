@@ -64,7 +64,6 @@ const FormProduct = () => {
         createdAt: new Date().toISOString(),
       };
       await axios.patch(`http://localhost:5000/product/${id}`, data);
-      navigate("/dashboard/products");
     } else {
       const data = {
         title,
@@ -75,18 +74,27 @@ const FormProduct = () => {
       };
       dispatch(CreateProduct(data));
     }
+    navigate("/dashboard/products");
   };
 
   useEffect(() => {
+    const cancelToken = axios.CancelToken.source();
+
     const fetchProduct = async (id) => {
       try {
-        const response = await axios.get(`http://localhost:5000/product/${id}`);
+        const response = await axios.get(
+          `http://localhost:5000/product/${id}`,
+          { cancelToken: cancelToken.token }
+        );
 
         setTitle(response.data.title);
         setPrice(response.data.price);
         setThumbnail(response.data.thumbnail);
         setDescription(response.data.description);
       } catch (error) {
+        if (axios.isCancel(err)) {
+          console.log(err);
+        }
         console.log(error);
       }
     };
@@ -99,6 +107,10 @@ const FormProduct = () => {
     if (id) {
       fetchProduct(id);
     }
+
+    return () => {
+      cancelToken.cancel();
+    };
   }, [dispatch]);
 
   //! check param id
