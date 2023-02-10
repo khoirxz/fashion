@@ -8,6 +8,7 @@ import mongoStore from "connect-mongo";
 import UserRoute from "./routes/UserRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import CategoryRoute from "./routes/CategoryRoute.js";
 // public router
 import PublicRoute from "./routes/PublicRouter.js";
 
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);
+app.use(CategoryRoute);
 // public router set
 app.use(PublicRoute);
 app.get("/", (req, res) => {

@@ -5,6 +5,23 @@ const productSchema = Schema({
   price: Number,
   thumbnail: String,
   description: String,
+  slug: String,
+  category: {
+    categoryId: Schema.Types.ObjectId,
+    name: String,
+  },
+  option: [
+    {
+      title: String,
+      values: [String],
+    },
+  ],
+  specification: [
+    {
+      key: String,
+      value: String,
+    },
+  ],
   createdAt: { type: Date },
   modifiedAt: { type: Date },
   published: {

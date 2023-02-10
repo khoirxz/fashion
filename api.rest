@@ -74,27 +74,70 @@ POST http://localhost:5000/product
 Content-Type: application/json
 
 {
-    "title": "Laptop",
+    "title": "Laptop Samsung",
     "price": 20000000,
-    "description": "Laptop gaming dengan kualitas"
+    "description": "Mouse gaming dengan kualitas",
+    "category": "",
+    "specification": [
+        {
+            "key": "Merk",
+            "value": "Logitec"
+        },
+        {
+            "key": "berat",
+            "value": "1gram"
+        }
+    ]
 }
 ###
 // get one product
-GET http://localhost:5000/product/63bbc64eaa14b7d2c88f41f3
+GET http://localhost:5000/product/63d3b2e182ccf383d479adc7
 ###
 // update product
-PATCH http://localhost:5000/product/63a85f15ece106a25eec99cc
+PATCH http://localhost:5000/product/63d3b2e182ccf383d479adc7
 Content-Type: application/json
 
 {
-    "title": "Prosesor",
-    "price": 5000000,
-    "description": "Prosesor gaming dengan kualitas"
+    "title": "Laptop",
+    "price": 1900000,
+    "description": "Laptop gaming dengan kualitas",
+    "specification": [
+    {
+      "key": "Merk",
+      "value": "MSI"
+    },
+    {
+      "key": "berat",
+      "value": "2kg"
+    },{
+        "key": "Bluetooth",
+        "value": "3.1"
+    }
+  ]
 }
 ###
 // delete product
 DELETE http://localhost:5000/product/63a863dc1d7128d58af3be6d
 
+#! PUBLIC ROUTE
 ###
 // public route
 GET http://localhost:5000/public/products
+
+###
+// get single products
+GET http://localhost:5000/public/products/laptop-lenovo-legion
+
+#! CATEGORY ROUTE
+###
+// get categories
+GET http://localhost:5000/category
+
+###
+// create category
+POST http://localhost:5000/category
+Content-Type: application/json
+
+{
+    "category": "Keyboard"
+}

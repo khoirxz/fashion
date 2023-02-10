@@ -1,4 +1,5 @@
 import ProductModel from "../models/ProductModel.js";
+import CategoryModel from "../models/CategoryModel.js";
 
 export const fetchAllProduct = async (req, res) => {
   try {
@@ -15,6 +16,7 @@ export const fetchAllProduct = async (req, res) => {
     res.status(500).json({ status: "error", message: error.message });
   }
 };
+
 export const fetchProduct = async (req, res) => {
   const { id: _id } = req.params;
   try {
@@ -36,8 +38,33 @@ export const fetchProduct = async (req, res) => {
     res.status(500).json({ status: "error", message: "invalid id" });
   }
 };
+
 export const createProduct = async (req, res) => {
-  const { title, price, description, thumbnail, createdAt } = req.body;
+  const {
+    title,
+    price,
+    category,
+    option,
+    description,
+    specification,
+    thumbnail,
+    createdAt,
+  } = req.body;
+
+  // find category
+  const resCategory = await CategoryModel.findOne({ title: category });
+  if (!resCategory)
+    return res
+      .status(401)
+      .json({ status: "error", message: "category not found" });
+
+  // slugfy
+  const slug = title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
   const newData = new ProductModel({
     thumbnail,
@@ -45,6 +72,13 @@ export const createProduct = async (req, res) => {
     title,
     price,
     description,
+    category: {
+      categoryId: resCategory._id,
+      name: resCategory.title,
+    },
+    option,
+    slug,
+    specification,
     published: {
       userId: req.userId,
       name: req.name,
@@ -55,7 +89,7 @@ export const createProduct = async (req, res) => {
 
     res.status(201).json({
       status: "created",
-      data: { title, price, description, userId: req.userId },
+      data: { title, price, description, slug, userId: req.userId },
     });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
@@ -68,11 +102,19 @@ export const updateProduct = async (req, res) => {
   try {
     const data = await ProductModel.findOne({ _id });
 
-    const { title, price, description, modifiedAt } = req.body;
+    const { title, price, description, modifiedAt, specification } = req.body;
+
+    const slug = title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
     if (req.role === "admin") {
       await ProductModel.findByIdAndUpdate(
         _id,
-        { title, price, description, id: _id, modifiedAt },
+        { title, price, description, slug, id: _id, modifiedAt, specification },
         { new: true }
       );
     } else {
