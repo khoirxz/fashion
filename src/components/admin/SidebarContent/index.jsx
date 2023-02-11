@@ -64,11 +64,26 @@ const SidebarContent = ({ role, id, handleLogout, ...rest }) => {
         aria-label="Main Navigation"
       >
         <NavItem as={Link} to="/dashboard/products">
-          Daftart Produk
+          Daftar Produk
         </NavItem>
+
+        <NavItem as={Link} to="/dashboard/categories">
+          Kategori
+        </NavItem>
+        <NavItem as={Link} to="/dashboard/products">
+          Pembelian
+        </NavItem>
+        <NavItem as={Link} to="/dashboard/products">
+          Diskon
+        </NavItem>
+
+        <NavItem as={Link} to="/dashboard/products">
+          Customer
+        </NavItem>
+
         {role === "admin" && (
           <NavItem as={Link} to="/dashboard/users">
-            Daftart User
+            Daftar User
           </NavItem>
         )}
 

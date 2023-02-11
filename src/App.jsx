@@ -7,6 +7,9 @@ import FormUser from "./pages/admin/FormUser";
 import ListProduct from "./pages/admin/ListProduct";
 import ListUser from "./pages/admin/ListUser";
 import Login from "./pages/admin/Login";
+import Categories from "./pages/admin/Categories";
+import FormCategories from "./pages/admin/FormCategories";
+
 //! public pages
 import Home from "./pages/public/Home";
 import ProductPage from "./pages/public/ProductPage";
@@ -19,10 +22,16 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/auth/admin" element={<Login />} />
           <Route path="/dashboard/products" element={<ListProduct />} />
           <Route path="/dashboard/product/edit/:id" element={<FormProduct />} />
           <Route path="/dashboard/product/add" element={<FormProduct />} />
+          <Route path="/dashboard/categories" element={<Categories />} />
+
+          <Route
+            path="/dashboard/categories/add"
+            element={<FormCategories />}
+          />
           <Route
             path="/dashboard/users"
             element={
@@ -42,7 +51,7 @@ const App = () => {
           <Route path="/dashboard/user/edit/:id" element={<FormUser />} />
           {/* public */}
           <Route path="/" element={<Home />} />
-          <Route path="/product/:title" element={<ProductPage />} />
+          <Route path="/product/:slug" element={<ProductPage />} />
         </Routes>
       </BrowserRouter>
     </div>

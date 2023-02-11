@@ -1,13 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const initialState = {
-  user: null,
-  isError: false,
-  isSuccess: false,
-  isLoading: false,
-  message: "",
-};
+import initialState from "./initialState";
 
 export const LoginUser = createAsyncThunk(
   "user/LoginUser",
@@ -29,6 +22,21 @@ export const LoginUser = createAsyncThunk(
 
 export const verifyUser = createAsyncThunk(
   "user/verifyUser",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get("http://localhost:5000/verify");
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data.message;
+        return thunkAPI.rejectWithValue(message);
+      }
+    }
+  }
+);
+
+export const verifyLogin = createAsyncThunk(
+  "user/verifyLogin",
   async (_, thunkAPI) => {
     try {
       const response = await axios.get("http://localhost:5000/verify");
@@ -79,6 +87,18 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;
+    });
+    //verify login
+    builder.addCase(verifyLogin.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(verifyLogin.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.user = action.payload;
+    });
+    builder.addCase(verifyLogin.rejected, (state, action) => {
+      state.isLoading = false;
     });
   },
 });

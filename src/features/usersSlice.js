@@ -1,13 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const initialState = {
-  data: null,
-  isError: false,
-  isSuccess: false,
-  isLoading: false,
-  message: "",
-};
+import initialState, {
+  fulfilledHandler,
+  loadingHandler,
+  rejectedHandler,
+} from "./initialState";
 
 export const FetchAllUser = createAsyncThunk(
   "user/FetchAllUser",
@@ -75,47 +72,18 @@ export const userSLice = createSlice({
     reset: (state) => initialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(FetchAllUser.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(FetchAllUser.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.data = action.payload;
-    });
-    builder.addCase(FetchAllUser.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.message = action.payload;
-    });
+    // get all user
+    builder.addCase(FetchAllUser.pending, loadingHandler);
+    builder.addCase(FetchAllUser.fulfilled, fulfilledHandler);
+    builder.addCase(FetchAllUser.rejected, rejectedHandler);
     // create user
-    builder.addCase(CreateUser.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(CreateUser.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.data = { status: 200, message: "created", data: action.payload };
-    });
-    builder.addCase(CreateUser.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.message = action.payload;
-    });
+    builder.addCase(CreateUser.pending, loadingHandler);
+    builder.addCase(CreateUser.fulfilled, fulfilledHandler);
+    builder.addCase(CreateUser.rejected, rejectedHandler);
     // delete user
-    builder.addCase(DeleteUser.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(DeleteUser.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.data = action.payload;
-    });
-    builder.addCase(DeleteUser.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.message = action.payload;
-    });
+    builder.addCase(DeleteUser.pending, loadingHandler);
+    builder.addCase(DeleteUser.fulfilled, fulfilledHandler);
+    builder.addCase(DeleteUser.rejected, rejectedHandler);
   },
 });
 

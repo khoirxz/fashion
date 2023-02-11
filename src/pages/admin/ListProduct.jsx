@@ -2,12 +2,20 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import {
-  ButtonGroup,
   Button,
   Text,
   Box,
   Flex,
   Spinner,
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverArrow,
+  PopoverHeader,
+  PopoverCloseButton,
+  PopoverBody,
+  PopoverContent,
+  PopoverFooter,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
@@ -60,29 +68,65 @@ const ListProduct = () => {
             selector: (row) => row.published.name,
           },
           {
-            name: "Edit",
+            name: "Action",
             selector: (row) => (
               <>
-                <ButtonGroup size="sm" isAttached variant="outline">
-                  <Button>
+                <Flex>
+                  <Button variant="outline" size="xs" rounded="none">
                     <Link to={`/dashboard/product/edit/${row._id}`}>Edit</Link>
                   </Button>
-                  <Button
-                    color="red.300"
-                    _hover={{
-                      color: "red.500",
-                    }}
-                    onClick={() => deleteProduct(row._id)}
-                  >
-                    Delete
-                  </Button>
-                </ButtonGroup>
+                  <Popover>
+                    <PopoverTrigger>
+                      <Button
+                        rounded="none"
+                        size="xs"
+                        variant="outline"
+                        color="red.300"
+                        _hover={{
+                          color: "red.500",
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </PopoverTrigger>
+                    <DeleteButton row={row} />
+                  </Popover>
+                </Flex>
               </>
             ),
           },
         ]}
         data={data}
       />
+    );
+  };
+
+  const DeleteButton = ({ row }) => {
+    return (
+      <Portal>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverHeader>Hapus produk ?</PopoverHeader>
+          <PopoverCloseButton />
+          <PopoverBody>
+            <Text>Apakah hapus produk {row.title}</Text>
+          </PopoverBody>
+          <PopoverFooter>
+            <Button
+              rounded="none"
+              size="xs"
+              bgColor="red.700"
+              color="white"
+              _hover={{
+                bgColor: "red.500",
+              }}
+              onClick={() => deleteProduct(row._id)}
+            >
+              Delete
+            </Button>
+          </PopoverFooter>
+        </PopoverContent>
+      </Portal>
     );
   };
 

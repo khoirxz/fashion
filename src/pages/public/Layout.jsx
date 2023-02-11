@@ -9,9 +9,7 @@ const Layout = ({ children }) => {
         {children}
       </Box>
       <Box borderTop="1px" borderColor="gray.300" mt="32">
-        <Box maxW="1000px" mx="auto">
-          <Footer />
-        </Box>
+        <Footer />
       </Box>
     </Box>
   );

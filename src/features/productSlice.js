@@ -1,13 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const initialState = {
-  data: null,
-  isError: false,
-  isSuccess: false,
-  isLoading: false,
-  message: "",
-};
+import initialState, {
+  fulfilledHandler,
+  loadingHandler,
+  rejectedHandler,
+} from "./initialState";
 
 export const FetchAllProduct = createAsyncThunk(
   "data/FetchAllProduct",
@@ -35,6 +32,7 @@ export const CreateProduct = createAsyncThunk(
         price: data.price,
         description: data.description,
         createdAt: data.createdAt,
+        specification: data.specification,
       });
 
       return response.data;
@@ -76,47 +74,18 @@ export const productSlice = createSlice({
     reset: (state) => initialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(FetchAllProduct.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(FetchAllProduct.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.data = action.payload;
-    });
-    builder.addCase(FetchAllProduct.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.message = action.payload;
-    });
+    // fetch all product
+    builder.addCase(FetchAllProduct.pending, loadingHandler);
+    builder.addCase(FetchAllProduct.fulfilled, fulfilledHandler);
+    builder.addCase(FetchAllProduct.rejected, rejectedHandler);
     // create product
-    builder.addCase(CreateProduct.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(CreateProduct.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.data = { status: 200, message: "created" };
-    });
-    builder.addCase(CreateProduct.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.message = action.payload;
-    });
+    builder.addCase(CreateProduct.pending, loadingHandler);
+    builder.addCase(CreateProduct.fulfilled, fulfilledHandler);
+    builder.addCase(CreateProduct.rejected, rejectedHandler);
     // delete product
-    builder.addCase(DeleteProduct.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(DeleteProduct.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.data = action.payload;
-    });
-    builder.addCase(DeleteProduct.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      state.message = action.payload;
-    });
+    builder.addCase(DeleteProduct.pending, loadingHandler);
+    builder.addCase(DeleteProduct.fulfilled, fulfilledHandler);
+    builder.addCase(DeleteProduct.rejected, rejectedHandler);
   },
 });
 

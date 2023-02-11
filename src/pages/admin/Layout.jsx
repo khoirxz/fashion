@@ -29,14 +29,14 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     if (isError) {
-      navigate("/login");
+      navigate("/auth/admin");
     }
   }, [isError, navigate]);
 
   const handleLogout = () => {
     dispatch(LogOut());
     dispatch(reset());
-    navigate("/login");
+    navigate("/auth/admin");
     // console.log(1);
   };
 

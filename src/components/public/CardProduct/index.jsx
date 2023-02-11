@@ -1,19 +1,20 @@
-import { Box, Button, Image, Text } from "@chakra-ui/react";
+import { Box, Button, Image, Text, LinkBox } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import productImg from "../../../assets/images/item.png";
 
-const CardProduct = () => {
+const CardProduct = ({ data }) => {
+  console.log(data?.title);
   return (
     <Box
       display="flex"
       flexDir="column"
-      height="400px"
+      height="345px"
       justifyContent="space-between"
     >
       <Box>
-        <Box maxH="200px" as={Link} to="/product/keyboard-keycron">
+        <LinkBox maxH="200px" as={Link} to={`/product/${data.slug}`}>
           <Image
-            src={productImg}
+            src={data.thumbnail}
             maxW="500px"
             w="full"
             height="200px"
@@ -21,17 +22,11 @@ const CardProduct = () => {
             objectPosition="center center"
             alt="product"
           />
-        </Box>
-        <Box
-          display="flex"
-          flexDir="column"
-          justifyContent="flex-start"
-          as={Link}
-          to="/product/keyboard-keycron"
-        >
+        </LinkBox>
+        <Box display="flex" flexDir="column" justifyContent="flex-start">
           <Box mb={3}>
             <Text as="h1" fontWeight="bold" mt={1}>
-              Keyboard Keycron
+              <Link to={`/product/${data.slug}`}>{data?.title}</Link>
             </Text>
             <Text
               color="gray.500"
@@ -40,14 +35,12 @@ const CardProduct = () => {
                 textDecoration: "underline",
                 cursor: "pointer",
               }}
-              as={Link}
-              to="/category/keyboard"
             >
-              keyboard
+              <Link to="/category/keybord">keyboard</Link>
             </Text>
           </Box>
           <Text fontWeight="bold" my={1}>
-            Rp.2000.000
+            Rp.{data.price}
           </Text>
         </Box>
       </Box>

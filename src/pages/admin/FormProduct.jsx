@@ -11,9 +11,12 @@ import {
   Textarea,
   Button,
   Image,
+  IconButton,
+  Select,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
+import { RiAddFill, RiDeleteBin7Fill } from "react-icons/ri";
 import Layout from "./Layout";
 
 import { CreateProduct, reset } from "../../features/productSlice";
@@ -26,11 +29,26 @@ const FormProduct = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
+  const [specification, setSpecification] = useState([{ key: "", value: "" }]);
 
   const { data } = useSelector((state) => state.product);
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleAddInput = () => {
+    setSpecification([...specification, { key: "", value: "" }]);
+  };
+
+  const handelChangeInput = (e, index) => {
+    const newSpecification = [...specification];
+    newSpecification[index][e.target.name] = e.target.value;
+    setSpecification(newSpecification);
+  };
+
+  const handleDelete = (index) => {
+    setSpecification(specification.filter((s, i) => i !== index));
+  };
 
   const uploadImage = async (file) => {
     const base64 = await convertBase64(file.target.files[0]);
@@ -61,7 +79,8 @@ const FormProduct = () => {
         thumbnail,
         price,
         description,
-        createdAt: new Date().toISOString(),
+        specification,
+        modifiedAt: new Date().toISOString(),
       };
       await axios.patch(`http://localhost:5000/product/${id}`, data);
     } else {
@@ -70,6 +89,7 @@ const FormProduct = () => {
         thumbnail,
         price,
         description,
+        specification,
         createdAt: new Date().toISOString(),
       };
       dispatch(CreateProduct(data));
@@ -91,9 +111,10 @@ const FormProduct = () => {
         setPrice(response.data.price);
         setThumbnail(response.data.thumbnail);
         setDescription(response.data.description);
+        setSpecification(response.data.specification);
       } catch (error) {
-        if (axios.isCancel(err)) {
-          console.log(err);
+        if (axios.isCancel(error)) {
+          console.log(error);
         }
         console.log(error);
       }
@@ -119,13 +140,13 @@ const FormProduct = () => {
     <Layout>
       <Box>
         <Box>
-          <Text as="h1" fontSize="2xl">
+          <Text as="h1" fontSize="3xl" fontWeight="bold">
             {id ? "Edit Product" : "Add Product"}
           </Text>
         </Box>
-        <Box my="10" bgColor="white" shadow="md" rounded="xl">
+        <Box my="10" bgColor="white">
           <Box as="form" onSubmit={handleSubmit} p="5">
-            <InputControl title="Thumbnails" my="3">
+            <InputControl title="Thumbnails" my="5">
               {thumbnail ? (
                 <Box w="52" h="52" rounded="md" position="relative">
                   <Image
@@ -249,8 +270,10 @@ const FormProduct = () => {
               )}
             </InputControl>
 
-            <InputControl title="Title" my="3">
+            <InputControl title="Title" my="10">
               <Input
+                borderColor="blackAlpha.400"
+                borderRadius="none"
                 type="text"
                 placeholder="Product name"
                 background="white"
@@ -258,16 +281,89 @@ const FormProduct = () => {
                 value={title}
               />
             </InputControl>
-            <InputControl title="Price" my="3">
+
+            <InputControl title="Price" my="10">
               <Input
+                borderColor="blackAlpha.400"
+                borderRadius="none"
                 type="number"
                 placeholder="Price"
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
               />
             </InputControl>
-            <InputControl title="Description" my="3">
+
+            <InputControl title="Kategori" my="10">
+              <Select
+                placeholder="Pilih kategori"
+                borderColor="blackAlpha.400"
+                borderRadius="none"
+              >
+                <option value="keyboard">keyboard</option>
+              </Select>
+            </InputControl>
+
+            <InputControl title="Information" my="10">
+              {specification.map((s, index) => (
+                <Flex gap={3} key={index} mb={3}>
+                  {s?.id && <Input type="hidden" value={s?.id} />}
+                  <Input
+                    type="text"
+                    name="key"
+                    value={s.key}
+                    onChange={(e) => handelChangeInput(e, index)}
+                    placeholder="Properti contoh: Merk, Berat"
+                    borderColor="blackAlpha.400"
+                    borderRadius="none"
+                  />
+                  <Input
+                    type="text"
+                    name="value"
+                    value={s.value}
+                    onChange={(e) => handelChangeInput(e, index)}
+                    placeholder="Properti contoh: Logitech, 1 kg"
+                    borderColor="blackAlpha.400"
+                    borderRadius="none"
+                  />
+                  {specification.length <= 1 ? (
+                    <IconButton
+                      aria-label="Delete Form"
+                      borderRadius="none"
+                      bgColor="black"
+                      _hover={{ bgColor: "blackAlpha.700" }}
+                      icon={<RiDeleteBin7Fill size="28px" color="#ffffff" />}
+                      disabled
+                    />
+                  ) : (
+                    <IconButton
+                      aria-label="Delete Form"
+                      borderRadius="none"
+                      bgColor="black"
+                      onClick={() => handleDelete(index)}
+                      _hover={{ bgColor: "blackAlpha.700" }}
+                      icon={<RiDeleteBin7Fill size="28px" color="#ffffff" />}
+                    />
+                  )}
+                </Flex>
+              ))}
+              <Stack direction="row" spacing={4} my={3}>
+                <Button
+                  leftIcon={<RiAddFill size={28} color="#ffffff" />}
+                  borderRadius="none"
+                  bgColor="black"
+                  color="white"
+                  _hover={{ bgColor: "blackAlpha.700" }}
+                  onClick={handleAddInput}
+                >
+                  Add properties
+                </Button>
+              </Stack>
+            </InputControl>
+
+            <InputControl title="Description" my="10">
               <Textarea
+                borderColor="blackAlpha.400"
+                borderRadius="none"
                 placeholder="Tulis tentang produkmu..."
                 onChange={(e) => setDescription(e.target.value)}
                 mt={1}
@@ -278,11 +374,27 @@ const FormProduct = () => {
 
             <Box>
               {id ? (
-                <Button colorScheme="facebook" type="submit">
+                <Button
+                  borderRadius="none"
+                  bgColor="black"
+                  color="white"
+                  type="submit"
+                  _hover={{
+                    bgColor: "blackAlpha.700",
+                  }}
+                >
                   Update
                 </Button>
               ) : (
-                <Button colorScheme="facebook" type="submit">
+                <Button
+                  borderRadius="none"
+                  bgColor="black"
+                  color="white"
+                  type="submit"
+                  _hover={{
+                    bgColor: "blackAlpha.700",
+                  }}
+                >
                   Save
                 </Button>
               )}

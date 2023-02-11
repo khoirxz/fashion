@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Box, Input, Flex, Button, Text } from "@chakra-ui/react";
 
-import { LoginUser, reset } from "../../features/authSlice";
+import { LoginUser, reset, verifyLogin } from "../../features/authSlice";
 
 import { InputControl } from "../../components/admin";
 
@@ -19,6 +19,8 @@ const Login = () => {
   );
 
   useEffect(() => {
+    dispatch(verifyLogin());
+
     if (user || isSuccess) {
       navigate("/dashboard");
       dispatch(reset());
@@ -81,7 +83,13 @@ const Login = () => {
           />
         </InputControl>
         {isLoading ? (
-          <Button type="submit" colorScheme="facebook" disabled>
+          <Button
+            type="submit"
+            borderRadius="none"
+            bgColor="black"
+            color="white"
+            disabled
+          >
             Login
           </Button>
         ) : (
@@ -98,10 +106,12 @@ const Login = () => {
             Login
           </Button>
         )}
-        {message ? (
-          <Text textAlign="center" color="red.500" mt="3" fontWeight="bold">
-            {message}
-          </Text>
+        {isError ? (
+          message ? (
+            <Text textAlign="center" color="red.500" mt="3" fontWeight="bold">
+              {message}
+            </Text>
+          ) : null
         ) : null}
       </Box>
     </Flex>
