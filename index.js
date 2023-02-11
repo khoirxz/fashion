@@ -23,7 +23,6 @@ app.use(
     saveUninitialized: true,
     store: mongoStore.create({
       mongoUrl: process.env.CONNECTION_URL,
-      ttl: 14 * 24 * 60 * 60,
     }),
     cookie: {
       secure: "auto",
