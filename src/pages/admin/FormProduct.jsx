@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
 import {
   Box,
-  chakra,
   Input,
   Text,
   Flex,
   Stack,
-  Icon,
-  VisuallyHidden,
   Textarea,
   Button,
   Image,
   IconButton,
   Select,
+  Skeleton,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
@@ -20,7 +18,8 @@ import { RiAddFill, RiDeleteBin7Fill } from "react-icons/ri";
 import Layout from "./Layout";
 
 import { CreateProduct, reset } from "../../features/productSlice";
-import { InputControl } from "../../components/admin";
+import { FetchAllCategories } from "../../features/categorySlice";
+import { InputControl, InputImage } from "../../components/admin";
 
 import axios from "axios";
 
@@ -29,47 +28,50 @@ const FormProduct = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
+  const [titleOption, setTitleOption] = useState("");
+  const [selectCategory, setSelectCategory] = useState("");
+  const [options, setOptions] = useState([
+    {
+      value: "",
+    },
+  ]);
   const [specification, setSpecification] = useState([{ key: "", value: "" }]);
 
   const { data } = useSelector((state) => state.product);
+  const { data: category, isLoading } = useSelector((state) => state.category);
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  //! handle Information field
   const handleAddInput = () => {
     setSpecification([...specification, { key: "", value: "" }]);
   };
-
   const handelChangeInput = (e, index) => {
     const newSpecification = [...specification];
     newSpecification[index][e.target.name] = e.target.value;
     setSpecification(newSpecification);
   };
-
   const handleDelete = (index) => {
     setSpecification(specification.filter((s, i) => i !== index));
   };
+  //! end of handle information
 
-  const uploadImage = async (file) => {
-    const base64 = await convertBase64(file.target.files[0]);
-    setThumbnail(base64);
+  //! handle options field
+  const handleAddOptions = () => {
+    setOptions([...options, { value: "" }]);
   };
-
-  const convertBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
+  const handleRemoveOption = (index) => {
+    setOptions(options.filter((o, i) => i !== index));
   };
+  const handleValueOption = (e, index) => {
+    const newOption = [...options];
+    newOption[index] = { value: e.target.value };
+    setOptions(newOption);
+  };
+  //! end of handle options field
 
+  //! handle submit or update
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,33 +91,37 @@ const FormProduct = () => {
         thumbnail,
         price,
         description,
+        category: selectCategory,
+        option: {
+          title: titleOption,
+          options: options,
+        },
         specification,
         createdAt: new Date().toISOString(),
+        modifiedAt: null,
       };
       dispatch(CreateProduct(data));
+      // console.log(data);
     }
     navigate("/dashboard/products");
   };
 
   useEffect(() => {
-    const cancelToken = axios.CancelToken.source();
+    dispatch(FetchAllCategories());
 
     const fetchProduct = async (id) => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/product/${id}`,
-          { cancelToken: cancelToken.token }
-        );
+        const response = await axios.get(`http://localhost:5000/product/${id}`);
 
         setTitle(response.data.title);
         setPrice(response.data.price);
         setThumbnail(response.data.thumbnail);
+        setSelectCategory(response.data.category.name);
+        setTitleOption(response.data.option.title);
+        setOptions(response.data.option.options);
         setDescription(response.data.description);
         setSpecification(response.data.specification);
       } catch (error) {
-        if (axios.isCancel(error)) {
-          console.log(error);
-        }
         console.log(error);
       }
     };
@@ -128,10 +134,6 @@ const FormProduct = () => {
     if (id) {
       fetchProduct(id);
     }
-
-    return () => {
-      cancelToken.cancel();
-    };
   }, [dispatch]);
 
   //! check param id
@@ -185,88 +187,7 @@ const FormProduct = () => {
                   </Box>
                 </Box>
               ) : (
-                <Flex
-                  w="52"
-                  h="52"
-                  rounded="md"
-                  borderWidth="2px"
-                  borderColor="gray.500"
-                  borderStyle="dashed"
-                  justify="center"
-                >
-                  <Stack
-                    spacing={1}
-                    textAlign="center"
-                    id="Flex"
-                    justifyContent="center"
-                  >
-                    <Icon
-                      mx="auto"
-                      boxSize={12}
-                      color="gray.400"
-                      _dark={{
-                        color: "gray.500",
-                      }}
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </Icon>
-                    <Flex
-                      fontSize="sm"
-                      color="gray.600"
-                      _dark={{
-                        color: "gray.400",
-                      }}
-                      alignItems="center"
-                      flexDir="column"
-                    >
-                      <chakra.label
-                        htmlFor="file-upload"
-                        cursor="pointer"
-                        rounded="md"
-                        fontSize="md"
-                        color="brand.600"
-                        _dark={{
-                          color: "brand.200",
-                        }}
-                        pos="relative"
-                        _hover={{
-                          color: "brand.400",
-                          _dark: {
-                            color: "brand.300",
-                          },
-                        }}
-                      >
-                        <span>Upload a file</span>
-                        <VisuallyHidden>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            onChange={(e) => uploadImage(e)}
-                          />
-                        </VisuallyHidden>
-                      </chakra.label>
-                    </Flex>
-                    <Text
-                      fontSize="xs"
-                      color="gray.500"
-                      _dark={{
-                        color: "gray.50",
-                      }}
-                    >
-                      PNG, JPG, GIF up to 10MB
-                    </Text>
-                  </Stack>
-                </Flex>
+                <InputImage setThumbnail={setThumbnail} />
               )}
             </InputControl>
 
@@ -294,13 +215,81 @@ const FormProduct = () => {
             </InputControl>
 
             <InputControl title="Kategori" my="10">
-              <Select
-                placeholder="Pilih kategori"
+              {isLoading ? (
+                <Skeleton height="30px" />
+              ) : (
+                <Select
+                  placeholder="Pilih kategori"
+                  borderColor="blackAlpha.400"
+                  borderRadius="none"
+                  value={selectCategory}
+                  onChange={(e) => setSelectCategory(e.target.value)}
+                >
+                  {category?.length >= 0
+                    ? category?.map((item) => (
+                        <option key={item._id} value={item.title}>
+                          {item.title}
+                        </option>
+                      ))
+                    : null}
+                </Select>
+              )}
+            </InputControl>
+
+            <InputControl title="Description" my="10">
+              <Textarea
                 borderColor="blackAlpha.400"
                 borderRadius="none"
-              >
-                <option value="keyboard">keyboard</option>
-              </Select>
+                placeholder="Tulis tentang produkmu..."
+                onChange={(e) => setDescription(e.target.value)}
+                mt={1}
+                rows={3}
+                value={description}
+              />
+            </InputControl>
+
+            <InputControl title="Opsi produk" my="10">
+              <Input
+                borderColor="blackAlpha.400"
+                borderRadius="none"
+                type="text"
+                placeholder="Contoh: Warna, Model, Seri"
+                onChange={(e) => setTitleOption(e.target.value)}
+                value={titleOption}
+              />
+              <Stack my="5">
+                {options?.map((item, index) => (
+                  <Flex gap={3} key={index}>
+                    <Input
+                      pl="5"
+                      variant="flushed"
+                      placeholder="Contoh: Merah, i7, Seri Produk"
+                      onChange={(e) => handleValueOption(e, index)}
+                      value={item.value}
+                    />
+                    <Flex gap={3}>
+                      <IconButton
+                        aria-label="Add Form"
+                        borderRadius="none"
+                        bgColor="black"
+                        onClick={handleAddOptions}
+                        _hover={{ bgColor: "blackAlpha.700" }}
+                        icon={<RiAddFill size={28} color="#ffffff" />}
+                      />
+
+                      <IconButton
+                        aria-label="Delete Form"
+                        borderRadius="none"
+                        bgColor="black"
+                        onClick={() => handleDelete(index)}
+                        _hover={{ bgColor: "blackAlpha.700" }}
+                        onClickCapture={() => handleRemoveOption(index)}
+                        icon={<RiDeleteBin7Fill size="28px" color="#ffffff" />}
+                      />
+                    </Flex>
+                  </Flex>
+                ))}
+              </Stack>
             </InputControl>
 
             <InputControl title="Information" my="10">
@@ -358,18 +347,6 @@ const FormProduct = () => {
                   Add properties
                 </Button>
               </Stack>
-            </InputControl>
-
-            <InputControl title="Description" my="10">
-              <Textarea
-                borderColor="blackAlpha.400"
-                borderRadius="none"
-                placeholder="Tulis tentang produkmu..."
-                onChange={(e) => setDescription(e.target.value)}
-                mt={1}
-                rows={3}
-                value={description}
-              />
             </InputControl>
 
             <Box>

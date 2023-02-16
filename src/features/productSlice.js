@@ -31,6 +31,8 @@ export const CreateProduct = createAsyncThunk(
         thumbnail: data.thumbnail,
         price: data.price,
         description: data.description,
+        category: data.category,
+        option: data.option,
         createdAt: data.createdAt,
         specification: data.specification,
       });
