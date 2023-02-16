@@ -10,12 +10,10 @@ const productSchema = Schema({
     categoryId: Schema.Types.ObjectId,
     name: String,
   },
-  option: [
-    {
-      title: String,
-      values: [String],
-    },
-  ],
+  option: {
+    title: String,
+    options: [],
+  },
   specification: [
     {
       key: String,
