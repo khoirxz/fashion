@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import session from "express-session";
+import FileUpload from "express-fileupload";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import mongoStore from "connect-mongo";
@@ -37,6 +38,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(FileUpload());
 app.use(UserRoute);
 app.use(ProductRoute);
 app.use(AuthRoute);

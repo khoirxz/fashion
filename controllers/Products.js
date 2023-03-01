@@ -1,3 +1,4 @@
+import path from "path";
 import ProductModel from "../models/ProductModel.js";
 import CategoryModel from "../models/CategoryModel.js";
 
@@ -40,60 +41,90 @@ export const fetchProduct = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  const {
-    title,
-    price,
-    category,
-    option,
-    description,
-    specification,
-    thumbnail,
-    createdAt,
-  } = req.body;
+  if (req.files === null)
+    return res.status(400).json({ status: "error", message: "image required" });
+  const fileImage = req.files.image;
+  const fileSize = fileImage.length;
+  const ext = path.extname(fileImage.name);
+  const fileName = fileImage.md5 + ext;
+  const url = `://${req.get("host")}/images/${fileName}`;
+  const allowedType = [".png", ".jpg", ".jpeg"];
 
-  // find category
-  const resCategory = await CategoryModel.findOne({ title: category });
-  if (!resCategory)
+  if (!allowedType.includes(ext.toLowerCase()))
     return res
-      .status(401)
-      .json({ status: "error", message: "category not found" });
+      .status(422)
+      .json({ status: "error", message: "type not allowed" });
+  if (fileSize > 5000000)
+    return res.status(422).json({ status: "error", message: "file to large" });
 
-  // slugfy
-  const slug = title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+  fileImage.mv(`./public/images/${fileName}`, async (err) => {
+    if (err) return res.status(500).json({ status: "error", message: err });
 
-  const newData = new ProductModel({
-    thumbnail,
-    createdAt,
-    title,
-    price,
-    description,
-    category: {
-      categoryId: resCategory._id,
-      name: resCategory.title,
-    },
-    option,
-    slug,
-    specification,
-    published: {
-      userId: req.userId,
-      name: req.name,
-    },
+    try {
+      // find category
+      const resCategory = await CategoryModel.findOne({
+        title: req.body.category,
+      });
+      if (!resCategory)
+        return res
+          .status(401)
+          .json({ status: "error", message: "category not found" });
+
+      // slugfy
+      const slug = req.body.title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+      const newData = new ProductModel({
+        title: req.body.title,
+        price: req.body.price,
+        thumbnail: url,
+        description: req.body.description,
+        createdAt: new Date().toISOString(),
+        category: {
+          categoryId: resCategory._id,
+          name: resCategory.title,
+        },
+        option: {
+          title: req.body.titleOptions,
+          options: req.body.values.map((item) => {
+            return {
+              value: item,
+            };
+          }),
+        },
+        slug,
+        specification: req.body.key.map((itemkey, i) => {
+          return {
+            key: itemkey,
+            value: req.body.svalue[i],
+          };
+        }),
+        published: {
+          userId: req.userId,
+          name: req.name,
+        },
+      });
+      try {
+        await newData.save();
+
+        res.status(201).json({
+          status: "created",
+          data: {
+            title: req.body.title,
+          },
+        });
+      } catch (error) {
+        res.status(500).json({ status: "error", message: error.message });
+      }
+    } catch (error) {
+      res.status(500).json({ status: "error", message: error.message });
+    }
   });
-  try {
-    await newData.save();
-
-    res.status(201).json({
-      status: "created",
-      data: { title, price, description, slug, userId: req.userId },
-    });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
+  // res.json(data);
 };
 
 export const updateProduct = async (req, res) => {
