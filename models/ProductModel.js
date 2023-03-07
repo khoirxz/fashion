@@ -3,7 +3,12 @@ import mongoose, { Schema } from "mongoose";
 const productSchema = Schema({
   title: String,
   price: Number,
-  thumbnail: String,
+  thumbnail: [
+    {
+      name: String,
+      url: String,
+    },
+  ],
   description: String,
   slug: String,
   category: {

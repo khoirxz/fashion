@@ -41,90 +41,175 @@ export const fetchProduct = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  if (req.files === null)
-    return res.status(400).json({ status: "error", message: "image required" });
   const fileImage = req.files.image;
-  const fileSize = fileImage.length;
-  const ext = path.extname(fileImage.name);
-  const fileName = fileImage.md5 + ext;
-  const url = `://${req.get("host")}/images/${fileName}`;
-  const allowedType = [".png", ".jpg", ".jpeg"];
+  let newThumbnail = [];
+  // try-catch data
+  try {
+    // find category
+    const resCategory = await CategoryModel.findOne({
+      title: req.body.category,
+    });
+    if (!resCategory)
+      return res
+        .status(401)
+        .json({ status: "error", message: "category not found" });
 
-  if (!allowedType.includes(ext.toLowerCase()))
-    return res
-      .status(422)
-      .json({ status: "error", message: "type not allowed" });
-  if (fileSize > 5000000)
-    return res.status(422).json({ status: "error", message: "file to large" });
+    // slugfy
+    const slug = req.body.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
-  fileImage.mv(`./public/images/${fileName}`, async (err) => {
-    if (err) return res.status(500).json({ status: "error", message: err });
-
-    try {
-      // find category
-      const resCategory = await CategoryModel.findOne({
-        title: req.body.category,
-      });
-      if (!resCategory)
-        return res
-          .status(401)
-          .json({ status: "error", message: "category not found" });
-
-      // slugfy
-      const slug = req.body.title
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/[\s_-]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-
-      const newData = new ProductModel({
-        title: req.body.title,
-        price: req.body.price,
-        thumbnail: url,
-        description: req.body.description,
-        createdAt: new Date().toISOString(),
-        category: {
-          categoryId: resCategory._id,
-          name: resCategory.title,
+    // proccess save images to dir
+    if (!Array.isArray(fileImage)) {
+      // save img to directory (one)
+      fileImage.mv(
+        `./public/images/${
+          fileImage.md5 +
+          new Date()
+            .toISOString()
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/[\s_-]+/g, "-")
+            .replace(/^-+|-+$/g, "") +
+          path.extname(fileImage.name)
+        }`,
+        async (err) => {
+          if (err)
+            return res.status(500).json({ status: "error", message: err });
+        }
+      );
+      newThumbnail = [
+        {
+          name:
+            fileImage.md5 +
+            new Date()
+              .toISOString()
+              .toLowerCase()
+              .trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-")
+              .replace(/^-+|-+$/g, "") +
+            path.extname(fileImage.name),
+          url: `//${req.get("host")}/images/${
+            fileImage.md5 +
+            new Date()
+              .toISOString()
+              .toLowerCase()
+              .trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-")
+              .replace(/^-+|-+$/g, "") +
+            path.extname(fileImage.name)
+          }`,
         },
-        option: {
-          title: req.body.titleOptions,
-          options: req.body.values.map((item) => {
+      ];
+    } else {
+      // save img to directory (array)
+      for (const item of fileImage) {
+        item.mv(
+          `./public/images/${
+            item.md5 +
+            new Date()
+              .toISOString()
+              .toLowerCase()
+              .trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-")
+              .replace(/^-+|-+$/g, "") +
+            path.extname(item.name)
+          }`,
+          async (err) => {
+            if (err)
+              return res.status(500).json({ status: "error", message: err });
+          }
+        );
+      }
+      // format json for save to database
+      newThumbnail = fileImage.map((item) => {
+        return {
+          name:
+            item.md5 +
+            new Date()
+              .toISOString()
+              .toLowerCase()
+              .trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-")
+              .replace(/^-+|-+$/g, "") +
+            path.extname(item.name),
+          url: `//${req.get("host")}/images/${
+            item.md5 +
+            new Date()
+              .toISOString()
+              .toLowerCase()
+              .trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-")
+              .replace(/^-+|-+$/g, "") +
+            path.extname(item.name)
+          }`,
+        };
+      });
+    }
+    // set all data product
+    const newData = new ProductModel({
+      title: req.body.title,
+      price: req.body.price,
+      thumbnail: newThumbnail,
+      description: req.body.description,
+      createdAt: new Date().toISOString(),
+      category: {
+        categoryId: resCategory._id,
+        name: resCategory.title,
+      },
+      option: {
+        title: req.body.titleOptions,
+        options: !Array.isArray(req.body.values)
+          ? [{ values: req.body.values }]
+          : req.body.values.map((item) => {
+              return {
+                value: item,
+              };
+            }),
+      },
+      slug,
+      specification: !Array.isArray(req.body.key)
+        ? [{ key: req.body.key, value: req.body.svalue }]
+        : req.body.key.map((itemkey, i) => {
             return {
-              value: item,
+              key: itemkey,
+              value: req.body.svalue[i],
             };
           }),
-        },
-        slug,
-        specification: req.body.key.map((itemkey, i) => {
-          return {
-            key: itemkey,
-            value: req.body.svalue[i],
-          };
-        }),
-        published: {
-          userId: req.userId,
-          name: req.name,
+      published: {
+        userId: req.userId,
+        name: req.name,
+      },
+    });
+    try {
+      // save to database
+      await newData.save();
+
+      // response (successfully)
+      res.status(201).json({
+        status: "created",
+        data: {
+          title: req.body.title,
         },
       });
-      try {
-        await newData.save();
-
-        res.status(201).json({
-          status: "created",
-          data: {
-            title: req.body.title,
-          },
-        });
-      } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
-      }
     } catch (error) {
-      res.status(500).json({ status: "error", message: error.message });
+      console.log(error);
+      res
+        .status(500)
+        .json({ status: "error", message: error.message, step: 2 });
     }
-  });
-  // res.json(data);
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message, step: 1 });
+  }
 };
 
 export const updateProduct = async (req, res) => {

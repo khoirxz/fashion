@@ -1,3 +1,6 @@
 node_modules
 .env
 yarn.lock
+public/images/*.jpg
+public/images/*.jpeg
+public/images/*.png
