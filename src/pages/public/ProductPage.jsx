@@ -20,13 +20,13 @@ import {
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 import Layout from "./Layout";
-
-import imgProduct from "../../assets/images/item.png";
+import { CustomButton } from "../../components/global";
 
 const ProductPage = () => {
   const [loading, setLoading] = useState(false);
   const [productData, setProductData] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState("");
 
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -54,8 +54,10 @@ const ProductPage = () => {
         console.log(response.data);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         setLoading(false);
+        // halaman 404 belom dibuat
+        if (error.response.status === 404) return navigate("/");
       }
     };
 
@@ -92,7 +94,7 @@ const ProductPage = () => {
             </Box>
             <Box>
               <Box>
-                <Badge size="lg">Keyboard</Badge>
+                <Badge size="lg">{productData?.category?.name}</Badge>
                 <Text fontSize="4xl" fontWeight="bold" my={1}>
                   {productData.title}
                 </Text>
@@ -102,6 +104,28 @@ const ProductPage = () => {
                     200 Sold
                   </Text>
                 </Box>
+
+                {productData?.option?.title === "" ? null : (
+                  <Box my="3rem">
+                    <Text fontSize="sm" color="gray.500">
+                      {productData?.option?.title}
+                    </Text>
+                    <Flex gap={3} my={2}>
+                      {productData?.option?.options?.map((item, i) => (
+                        <Button
+                          bgColor="white"
+                          border="1px"
+                          borderColor="gray.400"
+                          borderRadius="none"
+                          key={i}
+                        >
+                          {item.value}
+                        </Button>
+                      ))}
+                    </Flex>
+                  </Box>
+                )}
+
                 <Box my="3rem">
                   <Text
                     fontSize="sm"
@@ -211,21 +235,11 @@ const ProductPage = () => {
 
                 <Box my={3}>
                   <Text fontSize="3xl" fontWeight="bold" my={1}>
-                    Rp.{productData.price}
+                    Rp.{Number(productData.price) * quantity}
                   </Text>
                 </Box>
                 <Box display="flex" mt={2}>
-                  <Button
-                    w="full"
-                    bgColor="black"
-                    borderRadius="none"
-                    color="white"
-                    _hover={{
-                      bgColor: "blackAlpha.800",
-                    }}
-                  >
-                    BELI
-                  </Button>
+                  <CustomButton title="BELI" w="full" />
                 </Box>
               </Box>
             </Box>

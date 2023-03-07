@@ -8,7 +8,7 @@ import DummyImg from "../../../assets/images/heroSlider.png";
 
 const HeroBanner = () => {
   return (
-    <Box my={8} maxW="1000px" maxH="400px" position="relative">
+    <Box my={8} maxW="1200px" maxH="500px" position="relative">
       <Carousel
         swipeable={true}
         draggable={true}
@@ -37,8 +37,20 @@ const HeroBanner = () => {
         autoPlaySpeed={3000}
         showDots={true}
       >
-        <Image src={DummyImg} alt="Slider" w="full" objectFit="cover" />
-        <Image src={DummyImg} alt="Slider" w="full" objectFit="cover" />
+        <Image
+          src={DummyImg}
+          alt="Slider"
+          w="full"
+          objectFit="cover"
+          rounded="lg"
+        />
+        <Image
+          src={DummyImg}
+          alt="Slider"
+          w="full"
+          objectFit="cover"
+          rounded="lg"
+        />
       </Carousel>
     </Box>
   );

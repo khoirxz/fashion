@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Input, Text } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
-import { CreateCategory } from "../../features/categorySlice";
-import { useNavigate } from "react-router-dom";
+import { CreateCategory, UpdateCategory } from "../../features/categorySlice";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Layout from "./Layout";
-import { InputControl } from "../../components/admin";
+import { InputControl } from "../../components/global";
+import axios from "axios";
 
 const FormCategories = () => {
   const [category, setCategory] = useState("");
+
+  const { id } = useParams();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -16,15 +19,39 @@ const FormCategories = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const data = { category };
-    dispatch(CreateCategory(data));
-    navigate("/dashboard/categories");
+    if (id) {
+      dispatch(UpdateCategory({ category, id }));
+      navigate("/dashboard/categories");
+    } else {
+      const data = { category };
+      dispatch(CreateCategory(data));
+      navigate("/dashboard/categories");
+    }
+    console.log(category);
   };
+
+  useEffect(() => {
+    const getCategory = async (id) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/category/${id}`
+        );
+
+        // console.log(response);
+        setCategory(response.data.title);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCategory(id);
+  }, []);
+
   return (
     <Layout>
       <Box>
         <Text as="h1" fontSize="3xl" fontWeight="bold">
-          Tambah kategori
+          {id ? "Edit Kategori" : "Tambah kategori"}
         </Text>
 
         <Box as="form" my="10" onSubmit={handleSubmit}>

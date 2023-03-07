@@ -56,14 +56,14 @@ const Footer = () => {
               <InputGroup my={3}>
                 <Input
                   placeholder="Your Email"
-                  borderRadius="none"
+                  borderRightRadius="none"
                   border="1px"
                   borderColor="black"
                 />
                 <Button
                   bgColor="black"
                   color="white"
-                  borderRadius="none"
+                  borderLeftRadius="none"
                   _hover={{
                     color: "white",
                     bgColor: "black",

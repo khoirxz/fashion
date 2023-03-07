@@ -8,25 +8,15 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const InputImage = ({ setThumbnail }) => {
-  const uploadImage = async (file) => {
-    const base64 = await convertBase64(file.target.files[0]);
-    setThumbnail(base64);
-  };
+const InputImage = ({ setThumbnail, thumbnail }) => {
+  const loadImage = (e) => {
+    const imagesFile = [...e.target.files];
 
-  const convertBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
+    const newDataImages = imagesFile.map((item) => {
+      return { name: item.name, file: item, url: URL.createObjectURL(item) };
     });
+    setThumbnail([...thumbnail, ...newDataImages]);
+    console.log(newDataImages);
   };
 
   return (
@@ -91,7 +81,9 @@ const InputImage = ({ setThumbnail }) => {
                 id="file-upload"
                 name="file-upload"
                 type="file"
-                onChange={(e) => uploadImage(e)}
+                accept="image/png, image/jpeg, image,jpeg"
+                multiple={true}
+                onChange={(e) => loadImage(e)}
               />
             </VisuallyHidden>
           </chakra.label>

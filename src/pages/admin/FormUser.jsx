@@ -6,7 +6,7 @@ import { CreateUser, reset } from "../../features/usersSlice";
 
 import Layout from "./Layout";
 
-import { InputControl } from "../../components/admin";
+import { InputControl } from "../../components/global";
 import axios from "axios";
 
 const FormUser = () => {

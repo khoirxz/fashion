@@ -13,6 +13,7 @@ import FormCategories from "./pages/admin/FormCategories";
 //! public pages
 import Home from "./pages/public/Home";
 import ProductPage from "./pages/public/ProductPage";
+import LoginPublic from "./pages/public/Login";
 //! utils
 import ProtectedRoute from "./utils/ProtectedRoute";
 
@@ -33,6 +34,10 @@ const App = () => {
             element={<FormCategories />}
           />
           <Route
+            path="/dashboard/categories/edit/:id"
+            element={<FormCategories />}
+          />
+          <Route
             path="/dashboard/users"
             element={
               <ProtectedRoute>
@@ -50,6 +55,8 @@ const App = () => {
           />
           <Route path="/dashboard/user/edit/:id" element={<FormUser />} />
           {/* public */}
+          <Route path="/login" element={<LoginPublic />} />
+          <Route path="/signup" element={<LoginPublic />} />
           <Route path="/" element={<Home />} />
           <Route path="/product/:slug" element={<ProductPage />} />
         </Routes>

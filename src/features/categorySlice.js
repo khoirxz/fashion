@@ -40,6 +40,27 @@ export const CreateCategory = createAsyncThunk(
   }
 );
 
+export const UpdateCategory = createAsyncThunk(
+  "data/UpdateCategory",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:5000/category/${data.id}`,
+        {
+          title: data.category,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      if (error.message) {
+        const message = error.response.data.message;
+        return thunkAPI.rejectWithValue(message);
+      }
+    }
+  }
+);
+
 export const categorySlice = createSlice({
   name: "categoryData",
   initialState,
@@ -54,6 +75,10 @@ export const categorySlice = createSlice({
     builder.addCase(CreateCategory.pending, loadingHandler);
     builder.addCase(CreateCategory.fulfilled, fulfilledHandler);
     builder.addCase(CreateCategory.rejected, rejectedHandler);
+    // update category
+    builder.addCase(UpdateCategory.pending, loadingHandler);
+    builder.addCase(UpdateCategory.fulfilled, fulfilledHandler);
+    builder.addCase(UpdateCategory.rejected, rejectedHandler);
   },
 });
 

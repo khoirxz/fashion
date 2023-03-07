@@ -5,7 +5,7 @@ import { Box, Input, Flex, Button, Text } from "@chakra-ui/react";
 
 import { LoginUser, reset, verifyLogin } from "../../features/authSlice";
 
-import { InputControl } from "../../components/admin";
+import { InputControl } from "../../components/global";
 
 const Login = () => {
   const [email, setEmail] = useState("");

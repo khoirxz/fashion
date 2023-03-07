@@ -2,7 +2,11 @@ import { Box, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { FetchAllProductPublic } from "../../features/publicSlice";
-import { CardProduct, HeroBanner } from "../../components/public";
+import {
+  CardProduct,
+  CategorySlider,
+  HeroBanner,
+} from "../../components/public";
 
 import Layout from "./Layout";
 import { useEffect } from "react";
@@ -24,27 +28,18 @@ const Home = () => {
           <Text fontWeight="bold" fontSize="2xl">
             Temukan gaming gearmu !
           </Text>
-          <Box mt={3} display="flex" flexDir="row" gap={5} overflowX="auto">
-            <Text bgColor="black" px="5" py="1" color="white" cursor="pointer">
-              Keyboard
-            </Text>
-            <Text bgColor="black" px="5" py="1" color="white" cursor="pointer">
-              Mouse
-            </Text>
-            <Text bgColor="black" px="5" py="1" color="white" cursor="pointer">
-              Mousepad
-            </Text>
-            <Text bgColor="black" px="5" py="1" color="white" cursor="pointer">
-              Laptop
-            </Text>
-          </Box>
+
+          <CategorySlider />
         </Box>
 
-        <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap="40px">
+        <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap="20px">
           {isLoading ? (
-            <Stack>
-              <Skeleton />
-            </Stack>
+            <>
+              <Skeleton w="250px" h="300px" />
+              <Skeleton w="250px" h="300px" />
+              <Skeleton w="250px" h="300px" />
+              <Skeleton w="250px" h="300px" />
+            </>
           ) : data?.length >= 0 ? (
             data?.map((item) => <CardProduct key={item._id} data={item} />)
           ) : (

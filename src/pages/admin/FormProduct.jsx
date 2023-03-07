@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Input,
@@ -17,14 +17,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { RiAddFill, RiDeleteBin7Fill } from "react-icons/ri";
 import Layout from "./Layout";
 
-import { CreateProduct, reset } from "../../features/productSlice";
+import { CreateProduct } from "../../features/productSlice";
 import { FetchAllCategories } from "../../features/categorySlice";
-import { InputControl, InputImage } from "../../components/admin";
+import { InputImage } from "../../components/admin";
+import { InputControl } from "../../components/global";
 
 import axios from "axios";
 
 const FormProduct = () => {
-  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnail, setThumbnail] = useState([]);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
@@ -37,7 +38,6 @@ const FormProduct = () => {
   ]);
   const [specification, setSpecification] = useState([{ key: "", value: "" }]);
 
-  const { data } = useSelector((state) => state.product);
   const { data: category, isLoading } = useSelector((state) => state.category);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -86,24 +86,26 @@ const FormProduct = () => {
       };
       await axios.patch(`http://localhost:5000/product/${id}`, data);
     } else {
-      const data = {
-        title,
-        thumbnail,
-        price,
-        description,
-        category: selectCategory,
-        option: {
-          title: titleOption,
-          options: options,
-        },
-        specification,
-        createdAt: new Date().toISOString(),
-        modifiedAt: null,
-      };
+      const data = new FormData();
+      data.append("title", title);
+      thumbnail.map((item) => {
+        data.append("image", item.file);
+      });
+      data.append("price", price);
+      data.append("description", description);
+      data.append("category", selectCategory);
+      data.append("titleOptions", titleOption);
+      options.map((item) => {
+        data.append("values", item.value);
+      });
+      specification.map((itemkey, i) => {
+        data.append("key", itemkey.key);
+        data.append("svalue", specification[i].value);
+      });
+      console.log(thumbnail);
       dispatch(CreateProduct(data));
-      // console.log(data);
     }
-    navigate("/dashboard/products");
+    // navigate("/dashboard/products");
   };
 
   useEffect(() => {
@@ -126,11 +128,6 @@ const FormProduct = () => {
       }
     };
 
-    if (data?.status === 200) {
-      navigate("/dashboard/products");
-      dispatch(reset());
-    }
-
     if (id) {
       fetchProduct(id);
     }
@@ -149,46 +146,55 @@ const FormProduct = () => {
         <Box my="10" bgColor="white">
           <Box as="form" onSubmit={handleSubmit} p="5">
             <InputControl title="Thumbnails" my="5">
-              {thumbnail ? (
-                <Box w="52" h="52" rounded="md" position="relative">
-                  <Image
-                    position="absolute"
-                    zIndex="10"
-                    objectFit="cover"
-                    w="full"
-                    h="full"
-                    src={thumbnail}
-                    alt={title}
+              <Box display="flex" gap={4}>
+                {thumbnail.map((item, i) => (
+                  <React.Fragment key={i}>
+                    <Box w="52" h="52" rounded="md" position="relative">
+                      <Image
+                        position="absolute"
+                        zIndex="10"
+                        objectFit="cover"
+                        w="full"
+                        h="full"
+                        rounded="md"
+                        alt={item.name}
+                        src={item.url}
+                      />
+                      <Box
+                        w="52"
+                        h="52"
+                        rounded="md"
+                        bg="#0000009e"
+                        zIndex="20"
+                        position="relative"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        opacity={0}
+                        transition="all"
+                        cursor="pointer"
+                        onClick={() => setThumbnail([])}
+                        _hover={{
+                          opacity: 1,
+                        }}
+                        sx={{
+                          transition: "opacity 0.3s",
+                        }}
+                      >
+                        <Text fontSize="lg" fontWeight="bold" color="white">
+                          Hapus
+                        </Text>
+                      </Box>
+                    </Box>
+                  </React.Fragment>
+                ))}
+                {thumbnail.length >= 5 ? null : (
+                  <InputImage
+                    thumbnail={thumbnail}
+                    setThumbnail={setThumbnail}
                   />
-                  <Box
-                    w="52"
-                    h="52"
-                    rounded="md"
-                    bg="#0000009e"
-                    zIndex="20"
-                    position="relative"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    opacity={0}
-                    transition="all"
-                    cursor="pointer"
-                    onClick={() => setThumbnail(null)}
-                    _hover={{
-                      opacity: 1,
-                    }}
-                    sx={{
-                      transition: "opacity 0.3s",
-                    }}
-                  >
-                    <Text fontSize="lg" fontWeight="bold" color="white">
-                      Hapus
-                    </Text>
-                  </Box>
-                </Box>
-              ) : (
-                <InputImage setThumbnail={setThumbnail} />
-              )}
+                )}
+              </Box>
             </InputControl>
 
             <InputControl title="Title" my="10">

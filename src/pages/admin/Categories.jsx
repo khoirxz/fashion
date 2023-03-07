@@ -17,35 +17,6 @@ const Categories = () => {
 
   const { data, isLoading, isError } = useSelector((state) => state.category);
 
-  const ListComponent = ({ title }) => {
-    return (
-      <Box
-        pb={3}
-        mb="10"
-        borderBottom="1px"
-        borderColor="gray.200"
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Text>{title}</Text>
-        <Box display="flex" gap={3}>
-          <Button leftIcon={<AiFillEdit />} size="sm" borderRadius="none">
-            Edit
-          </Button>
-          <Button
-            borderRadius="none"
-            leftIcon={<AiFillDelete color="#ff4133" />}
-            size="sm"
-            color="#ff4133"
-          >
-            Delete
-          </Button>
-        </Box>
-      </Box>
-    );
-  };
-
   return (
     <Layout>
       <Box>
@@ -76,7 +47,11 @@ const Categories = () => {
             ) : !isLoading ? (
               data?.length >= 0 ? (
                 data?.map((item) => (
-                  <ListComponent key={item._id} title={item.title} />
+                  <ListComponent
+                    key={item._id}
+                    title={item.title}
+                    id={item._id}
+                  />
                 ))
               ) : null
             ) : (
@@ -86,6 +61,41 @@ const Categories = () => {
         </Box>
       </Box>
     </Layout>
+  );
+};
+
+const ListComponent = ({ title, id }) => {
+  return (
+    <Box
+      pb={3}
+      mb="10"
+      borderBottom="1px"
+      borderColor="gray.200"
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Text>{title}</Text>
+      <Box display="flex" gap={3}>
+        <Button
+          leftIcon={<AiFillEdit />}
+          size="sm"
+          borderRadius="none"
+          as={Link}
+          to={`/dashboard/categories/edit/${id}`}
+        >
+          Edit
+        </Button>
+        <Button
+          borderRadius="none"
+          leftIcon={<AiFillDelete color="#ff4133" />}
+          size="sm"
+          color="#ff4133"
+        >
+          Delete
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

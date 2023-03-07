@@ -1,11 +1,21 @@
-import { Box, Text, chakra, Badge } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  chakra,
+  Badge,
+  Input,
+  InputGroup,
+  InputLeftElement,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
 const Navbar = () => {
   return (
-    <Box as="nav">
+    <Box as="nav" borderBottom="1px" borderColor="gray.300" py={2} shadow="sm">
       <Box
+        maxW="1200px"
+        mx="auto"
         display="flex"
         justifyContent="space-between"
         alignItems="center"
@@ -18,21 +28,20 @@ const Navbar = () => {
           </Text>
         </Box>
 
-        <chakra.input
-          border="1px"
-          borderColor="gray.500"
-          maxW="500px"
-          w="full"
-          p="2"
-          placeholder="Cari produk"
-        />
-
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
           gap="20px"
         >
+          <InputGroup>
+            <InputLeftElement
+              pointerEvents="none"
+              children={<IoSearchOutline color="#636363" />}
+            />
+            <Input placeholder="Cari produk" minW="350px" />
+          </InputGroup>
+
           <chakra.button
             display="flex"
             justifyContent="space-between"
@@ -44,7 +53,9 @@ const Navbar = () => {
               5
             </Badge>
           </chakra.button>
-          <Text>Welcome User</Text>
+          <chakra.div>
+            <Text>Admin</Text>
+          </chakra.div>
         </Box>
       </Box>
     </Box>
