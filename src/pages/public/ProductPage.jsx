@@ -26,6 +26,7 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(false);
   const [productData, setProductData] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const [selectedImg, setSelectedImg] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
   const { slug } = useParams();
@@ -51,6 +52,7 @@ const ProductPage = () => {
         );
 
         setProductData(response.data);
+        setSelectedImg(response.data.thumbnail[0].url);
         console.log(response.data);
         setLoading(false);
       } catch (error) {
@@ -82,15 +84,39 @@ const ProductPage = () => {
         ) : (
           <>
             <Box>
-              <Box maxW="400px" maxH="400px">
+              <Box maxW="400px" maxH="400px" mx="auto">
                 <Image
-                  src={productData.thumbnail}
+                  src={selectedImg}
                   alt="Keyboard"
                   maxW="500px"
                   w="full"
                   h="400px"
+                  objectFit="cover"
                 />
               </Box>
+              <Flex my={5} justifyContent="center" gap="10px">
+                {productData &&
+                  (productData.thumbnail?.length >= 1
+                    ? productData.thumbnail?.map((item, i) => (
+                        <Box key={i}>
+                          <Image
+                            alt={item.name}
+                            src={item.url}
+                            w="20"
+                            h="20"
+                            objectFit="cover"
+                            border="1px"
+                            borderColor="#444442"
+                            borderRadius="md"
+                            onClick={() => setSelectedImg(item.url)}
+                            sx={{
+                              cursor: "pointer",
+                            }}
+                          />
+                        </Box>
+                      ))
+                    : productData.thumbnail)}
+              </Flex>
             </Box>
             <Box>
               <Box>

@@ -9,17 +9,31 @@ const CardProduct = ({ data }) => {
     <Box display="flex" flexDir="column" justifyContent="space-between">
       <Box>
         <LinkBox as={Link} to={`/product/${data.slug}`}>
-          <Image
-            rounded="sm"
-            mx="auto"
-            src={data.thumbnail}
-            maxW="180px"
-            w="full"
-            height="180px"
-            objectFit="cover"
-            objectPosition="center center"
-            alt="product"
-          />
+          {data?.thumbnail?.length >= 1 ? (
+            <Image
+              rounded="sm"
+              mx="auto"
+              src={`http:${data?.thumbnail[0].url}`}
+              maxW="180px"
+              w="full"
+              height="180px"
+              objectFit="cover"
+              objectPosition="center center"
+              alt="product"
+            />
+          ) : (
+            <Image
+              rounded="sm"
+              mx="auto"
+              src={`http:${data?.thumbnail?.url}`}
+              maxW="180px"
+              w="full"
+              height="180px"
+              objectFit="cover"
+              objectPosition="center center"
+              alt="product"
+            />
+          )}
         </LinkBox>
         <Box
           display="flex"

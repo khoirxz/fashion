@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
   return (
     <Box fontFamily="Inter">
       <Navbar />
-      <Box maxW="1200px" mx="auto">
+      <Box maxW="1200px" mx={{ base: "1rem", xl: "auto" }}>
         {children}
       </Box>
       <Box borderTop="1px" borderColor="gray.300" mt="32">

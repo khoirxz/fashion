@@ -113,16 +113,19 @@ const FormProduct = () => {
 
     const fetchProduct = async (id) => {
       try {
-        const response = await axios.get(`http://localhost:5000/product/${id}`);
+        const { data: response } = await axios.get(
+          `http://localhost:5000/product/${id}`
+        );
 
-        setTitle(response.data.title);
-        setPrice(response.data.price);
-        setThumbnail(response.data.thumbnail);
-        setSelectCategory(response.data.category.name);
-        setTitleOption(response.data.option.title);
-        setOptions(response.data.option.options);
-        setDescription(response.data.description);
-        setSpecification(response.data.specification);
+        console.log(response);
+        setTitle(response.title);
+        setPrice(response.price);
+        setSelectCategory(response.category.name);
+        setDescription(response.description);
+        setTitleOption(response.option.title);
+        setOptions(response.option.options);
+        setThumbnail(response.thumbnail);
+        setSpecification(response.specification);
       } catch (error) {
         console.log(error);
       }
@@ -158,7 +161,7 @@ const FormProduct = () => {
                         h="full"
                         rounded="md"
                         alt={item.name}
-                        src={item.url}
+                        src={id ? `http:${item.url}` : item.url}
                       />
                       <Box
                         w="52"
