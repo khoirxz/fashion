@@ -10,11 +10,13 @@ export const validateProduct = async (req, res, next) => {
       .json({ status: "error", message: "Title is missing!" });
 
   const item = await ProductModel.findOne({ title });
-  if (item)
-    return res.status(409).json({
-      status: "error",
-      message: "Item sudah ada",
-    });
+  if (req.method === "POST") {
+    if (item)
+      return res.status(409).json({
+        status: "error",
+        message: "Item sudah ada",
+      });
+  }
 
   next();
 };

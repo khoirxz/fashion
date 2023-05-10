@@ -1,6 +1,7 @@
 import path from "path";
 import ProductModel from "../models/ProductModel.js";
 import CategoryModel from "../models/CategoryModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const fetchAllProduct = async (req, res) => {
   try {
@@ -63,19 +64,18 @@ export const createProduct = async (req, res) => {
       .replace(/^-+|-+$/g, "");
 
     // proccess save images to dir
+    const dateSaveFile = new Date()
+      .toISOString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
     if (!Array.isArray(fileImage)) {
       // save img to directory (one)
       fileImage.mv(
         `./public/images/${
-          fileImage.md5 +
-          new Date()
-            .toISOString()
-            .toLowerCase()
-            .trim()
-            .replace(/[^\w\s-]/g, "")
-            .replace(/[\s_-]+/g, "-")
-            .replace(/^-+|-+$/g, "") +
-          path.extname(fileImage.name)
+          fileImage.md5 + dateSaveFile + path.extname(fileImage.name)
         }`,
         async (err) => {
           if (err)
@@ -84,16 +84,7 @@ export const createProduct = async (req, res) => {
       );
       newThumbnail = [
         {
-          name:
-            fileImage.md5 +
-            new Date()
-              .toISOString()
-              .toLowerCase()
-              .trim()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/[\s_-]+/g, "-")
-              .replace(/^-+|-+$/g, "") +
-            path.extname(fileImage.name),
+          name: fileImage.md5 + dateSaveFile + path.extname(fileImage.name),
           url: `//${req.get("host")}/images/${
             fileImage.md5 +
             new Date()
@@ -112,15 +103,7 @@ export const createProduct = async (req, res) => {
       for (const item of fileImage) {
         item.mv(
           `./public/images/${
-            item.md5 +
-            new Date()
-              .toISOString()
-              .toLowerCase()
-              .trim()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/[\s_-]+/g, "-")
-              .replace(/^-+|-+$/g, "") +
-            path.extname(item.name)
+            item.md5 + dateSaveFile + path.extname(item.name)
           }`,
           async (err) => {
             if (err)
@@ -131,26 +114,9 @@ export const createProduct = async (req, res) => {
       // format json for save to database
       newThumbnail = fileImage.map((item) => {
         return {
-          name:
-            item.md5 +
-            new Date()
-              .toISOString()
-              .toLowerCase()
-              .trim()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/[\s_-]+/g, "-")
-              .replace(/^-+|-+$/g, "") +
-            path.extname(item.name),
+          name: item.md5 + dateSaveFile + path.extname(item.name),
           url: `//${req.get("host")}/images/${
-            item.md5 +
-            new Date()
-              .toISOString()
-              .toLowerCase()
-              .trim()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/[\s_-]+/g, "-")
-              .replace(/^-+|-+$/g, "") +
-            path.extname(item.name)
+            item.md5 + dateSaveFile + path.extname(item.name)
           }`,
         };
       });
@@ -214,25 +180,181 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   const { id: _id } = req.params;
-
+  const fileImage = req.files?.image;
+  let newThumbnail = [];
+  console.log(fileImage ? "ada file" : "tidak ada");
   try {
     const data = await ProductModel.findOne({ _id });
+    // check if product exist
+    if (!data)
+      return res
+        .status(401)
+        .json({ status: "error", message: "product not found" });
 
-    const { title, price, description, modifiedAt, specification } = req.body;
+    console.log(data.thumbnail);
+    // check if category exist
+    const resCategory = await CategoryModel.findOne({
+      title: req.body.category,
+    });
+    if (!resCategory)
+      return res
+        .status(401)
+        .json({ status: "error", message: "category not found" });
 
-    const slug = title
+    // set image
+    if (fileImage) {
+      if (!Array.isArray(fileImage)) {
+        newThumbnail = [
+          {
+            name:
+              fileImage.md5 +
+              new Date()
+                .toISOString()
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/[\s_-]+/g, "-")
+                .replace(/^-+|-+$/g, "") +
+              path.extname(fileImage.name),
+            url: `//${req.get("host")}/images/${
+              fileImage.md5 +
+              new Date()
+                .toISOString()
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/[\s_-]+/g, "-")
+                .replace(/^-+|-+$/g, "") +
+              path.extname(fileImage.name)
+            }`,
+          },
+        ];
+      } else {
+        // format json for save to database
+        newThumbnail = fileImage.map((item) => {
+          return {
+            name:
+              item.md5 +
+              new Date()
+                .toISOString()
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/[\s_-]+/g, "-")
+                .replace(/^-+|-+$/g, "") +
+              path.extname(item.name),
+            url: `//${req.get("host")}/images/${
+              item.md5 +
+              new Date()
+                .toISOString()
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/[\s_-]+/g, "-")
+                .replace(/^-+|-+$/g, "") +
+              path.extname(item.name)
+            }`,
+          };
+        });
+      }
+    }
+    // slugfy
+    const slug = req.body.title
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, "")
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
+    // set new data
+    const newData = {
+      title: req.body.title,
+      price: req.body.price,
+      thumbnail: fileImage ? newThumbnail : data.thumbnail,
+      description: req.body.description,
+      createdAt: new Date().toISOString(),
+      category: {
+        categoryId: resCategory._id,
+        name: resCategory.title,
+      },
+      option: {
+        title: req.body.titleOptions,
+        options: !Array.isArray(req.body.values)
+          ? [{ values: req.body.values }]
+          : req.body.values.map((item) => {
+              return {
+                value: item,
+              };
+            }),
+      },
+      slug,
+      specification: !Array.isArray(req.body.key)
+        ? [{ key: req.body.key, value: req.body.svalue }]
+        : req.body.key.map((itemkey, i) => {
+            return {
+              key: itemkey,
+              value: req.body.svalue[i],
+            };
+          }),
+      published: {
+        userId: req.userId,
+        name: req.name,
+      },
+    };
+    // role
     if (req.role === "admin") {
       await ProductModel.findByIdAndUpdate(
         _id,
-        { title, price, description, slug, id: _id, modifiedAt, specification },
+        { ...newData, id: _id },
         { new: true }
       );
+
+      // save image to directory
+      if (fileImage) {
+        if (!Array.isArray(fileImage)) {
+          // save img to directory (one)
+          fileImage.mv(
+            `./public/images/${
+              fileImage.md5 +
+              new Date()
+                .toISOString()
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, "")
+                .replace(/[\s_-]+/g, "-")
+                .replace(/^-+|-+$/g, "") +
+              path.extname(fileImage.name)
+            }`,
+            async (err) => {
+              if (err)
+                return res.status(500).json({ status: "error", message: err });
+            }
+          );
+        } else {
+          // save img to directory (array)
+          for (const item of fileImage) {
+            item.mv(
+              `./public/images/${
+                item.md5 +
+                new Date()
+                  .toISOString()
+                  .toLowerCase()
+                  .trim()
+                  .replace(/[^\w\s-]/g, "")
+                  .replace(/[\s_-]+/g, "-")
+                  .replace(/^-+|-+$/g, "") +
+                path.extname(item.name)
+              }`,
+              async (err) => {
+                if (err)
+                  return res
+                    .status(500)
+                    .json({ status: "error", message: err });
+              }
+            );
+          }
+        }
+      }
     } else {
       if (req.userId.toString() !== data.published.userId.toString())
         return res
@@ -241,7 +363,7 @@ export const updateProduct = async (req, res) => {
 
       await ProductModel.findByIdAndUpdate(
         _id,
-        { title, price, description, id: _id },
+        { ...newData, id: _id },
         { new: true }
       );
     }
