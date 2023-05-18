@@ -1,6 +1,7 @@
 import path from "path";
 import ProductModel from "../models/ProductModel.js";
 import CategoryModel from "../models/CategoryModel.js";
+import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 
 export const fetchAllProduct = async (req, res) => {
@@ -376,6 +377,8 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   const { id: _id } = req.params;
 
+  const folderPath = "../backend/public/images/";
+
   try {
     const data = await ProductModel.findOne({ _id });
 
@@ -389,6 +392,24 @@ export const deleteProduct = async (req, res) => {
 
       await ProductModel.findByIdAndRemove(_id);
     }
+
+    // ambil nama file dari database
+    const thumbnails = data.thumbnail.map((item, i) => [item.name]);
+
+    // delete img from folder
+    thumbnails.forEach(async (fileName) => {
+      const filePath = `${folderPath}${fileName}`;
+
+      try {
+        await fs.promises.unlink(filePath);
+        console.log(`${fileName} telah dihapus`);
+      } catch (error) {
+        throw error;
+      }
+    });
+
+    console.log(thumbnails);
+
     res.status(200).json({ status: "deleted", message: "Product deleted" });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
