@@ -268,24 +268,27 @@ const FormProduct = () => {
               />
               <Stack my="5">
                 {options?.map((item, index) => (
-                  <Flex gap={3} key={index}>
+                  <Flex gap={3} justifyContent="space-between" key={index}>
                     <Input
                       pl="5"
                       variant="flushed"
+                      maxW="600px"
                       placeholder="Contoh: Merah, i7, Seri Produk"
                       onChange={(e) => handleValueOption(e, index)}
                       value={item.value}
                     />
                     <Flex gap={3}>
-                      <IconButton
-                        aria-label="Add Form"
-                        borderRadius="none"
-                        bgColor="black"
-                        onClick={handleAddOptions}
-                        _hover={{ bgColor: "blackAlpha.700" }}
-                        icon={<RiAddFill size={28} color="#ffffff" />}
-                      />
-
+                      {options.length === index + 1 ? (
+                        <IconButton
+                          aria-label="Add Form"
+                          borderRadius="none"
+                          bgColor="black"
+                          onClick={handleAddOptions}
+                          _hover={{ bgColor: "blackAlpha.700" }}
+                          icon={<RiAddFill size={28} color="#ffffff" />}
+                        />
+                      ) : null}
+                      {console.table({ table: options.length, index })}
                       <IconButton
                         aria-label="Delete Form"
                         borderRadius="none"

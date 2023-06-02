@@ -14,6 +14,7 @@ import FormCategories from "./pages/admin/FormCategories";
 import Home from "./pages/public/Home";
 import ProductPage from "./pages/public/ProductPage";
 import LoginPublic from "./pages/public/Login";
+import Profile from "./pages/public/Profile";
 //! utils
 import ProtectedRoute from "./utils/ProtectedRoute";
 
@@ -57,6 +58,7 @@ const App = () => {
           {/* public */}
           <Route path="/login" element={<LoginPublic />} />
           <Route path="/signup" element={<LoginPublic />} />
+          <Route path="/profile/:username" element={<Profile />} />
           <Route path="/" element={<Home />} />
           <Route path="/product/:slug" element={<ProductPage />} />
         </Routes>

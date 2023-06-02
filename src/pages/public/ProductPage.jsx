@@ -139,11 +139,33 @@ const ProductPage = () => {
                     <Flex gap={3} my={2}>
                       {productData?.option?.options?.map((item, i) => (
                         <Button
-                          bgColor="white"
+                          bgColor={
+                            selectedColor === item.value.toLowerCase()
+                              ? "black"
+                              : "white"
+                          }
                           border="1px"
-                          borderColor="gray.400"
+                          borderColor={
+                            selectedColor === item.value.toLowerCase()
+                              ? "black"
+                              : "gray.400"
+                          }
+                          color={
+                            selectedColor === item.value.toLowerCase()
+                              ? "white"
+                              : "black"
+                          }
+                          _hover={{
+                            backgroundColor:
+                              selectedColor === item.value.toLowerCase()
+                                ? "black.500"
+                                : "white",
+                          }}
                           borderRadius="none"
                           key={i}
+                          onClick={() =>
+                            setSelectedColor(item.value.toLowerCase())
+                          }
                         >
                           {item.value}
                         </Button>

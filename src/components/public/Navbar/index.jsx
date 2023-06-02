@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 
-const Navbar = () => {
+const Navbar = ({ openChart }) => {
   return (
     <Box as="nav" borderBottom="1px" borderColor="gray.300" py={2} shadow="sm">
       <Box
@@ -47,6 +47,7 @@ const Navbar = () => {
             justifyContent="space-between"
             alignItems="center"
             gap="5px"
+            onClick={openChart}
           >
             <IoCartOutline size={24} />{" "}
             <Badge bgColor="blackAlpha.900" color="white">
@@ -54,7 +55,9 @@ const Navbar = () => {
             </Badge>
           </chakra.button>
           <chakra.div>
-            <Text>Admin</Text>
+            <Text>
+              <Link to="/login">Login</Link>
+            </Text>
           </chakra.div>
         </Box>
       </Box>
