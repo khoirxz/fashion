@@ -141,3 +141,27 @@ Content-Type: application/json
 {
     "category": "Keyboard"
 }
+
+###
+// customer API
+// get customers
+GET http://localhost:5000/customer
+
+###
+// get one customer
+GET http://localhost:5000/customer/647a2029d10a549903640216
+
+###
+// create customer or signup
+POST http://localhost:5000/customer
+Content-Type: application/json
+
+{
+    "username": "riyad",
+    "firstName": "riyad",
+    "lastName": "awibi",
+    "email": "riyadawibi@gmail.com",
+    "password": "admin123",
+    "confirmPassword": "admin123",
+    "telephone": "0823172462"
+}

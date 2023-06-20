@@ -6,10 +6,13 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import mongoStore from "connect-mongo";
 
+// admin or staff router
 import UserRoute from "./routes/UserRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import CategoryRoute from "./routes/CategoryRoute.js";
+// customer router
+import CustomerRoute from "./routes/CustomerRoute.js";
 // public router
 import PublicRoute from "./routes/PublicRouter.js";
 
@@ -40,12 +43,15 @@ app.use(
 app.use(express.json());
 app.use(FileUpload());
 app.use(express.static("public"));
-app.use(UserRoute);
-app.use(ProductRoute);
-app.use(AuthRoute);
-app.use(CategoryRoute);
+// admin/staff router set
+app.use(UserRoute); //? route untuk admin/staff
+app.use(ProductRoute); //? route untuk produk
+app.use(AuthRoute); //? route untuk login admin/staff
+app.use(CategoryRoute); //? route untuk kategori
+// customer router set
+app.use(CustomerRoute); //? route untuk customer
 // public router set
-app.use(PublicRoute);
+app.use(PublicRoute); //? route untuk produk publik
 app.get("/", (req, res) => {
   res.send("Hello World");
   res.end();
