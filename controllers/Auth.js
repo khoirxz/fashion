@@ -13,7 +13,7 @@ export const Login = async (req, res) => {
   if (!match)
     return res.status(409).json({
       status: "error",
-      message: "password doestn match",
+      message: "email and password is wrong!",
     });
 
   req.session.userId = user._id;

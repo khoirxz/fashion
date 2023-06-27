@@ -1,7 +1,11 @@
 import CustomerModel from "../models/CustomerModel.js";
 import libphonenumber from "libphonenumber-js";
 import argon2 from "argon2";
-
+/**
+ *
+ * @param {request} req request from user input like params url
+ * @param {response} res response from server like json or html
+ */
 export const fetchAllCustomer = async (req, res) => {
   try {
     const data = await CustomerModel.find({});

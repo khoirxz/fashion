@@ -165,3 +165,33 @@ Content-Type: application/json
     "confirmPassword": "admin123",
     "telephone": "0823172462"
 }
+###
+// update/edit customer or signup
+PATCH http://localhost:5000/customer/647a2029d10a549903640216
+Content-Type: application/json
+
+{
+    "username": "riyad",
+    "firstName": "riyadh",
+    "lastName": "awibi",
+    "email": "riyadhawibi@gmail.com",
+    "password": "admin123",
+    "confirmPassword": "admin123",
+    "telephone": "0823172462"
+}
+
+###
+// delete one customer
+DELETE http://localhost:5000/customer/647a2029d10a549903640216
+###
+// login customer
+POST http://localhost:5000/customer/auth/login
+Content-Type: application/json
+
+{
+    "email": "riyadawibi@gmail.com",
+    "password": "admin123"
+}
+###
+// check customer
+GET http://localhost:5000/customer/auth/verify

@@ -12,6 +12,7 @@ import ProductRoute from "./routes/ProductRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import CategoryRoute from "./routes/CategoryRoute.js";
 // customer router
+import AuthCustomerRoute from "./routes/AuthCustomerRoute.js";
 import CustomerRoute from "./routes/CustomerRoute.js";
 // public router
 import PublicRoute from "./routes/PublicRouter.js";
@@ -50,6 +51,7 @@ app.use(AuthRoute); //? route untuk login admin/staff
 app.use(CategoryRoute); //? route untuk kategori
 // customer router set
 app.use(CustomerRoute); //? route untuk customer
+app.use(AuthCustomerRoute); //? route untuk autentikasi customer
 // public router set
 app.use(PublicRoute); //? route untuk produk publik
 app.get("/", (req, res) => {

@@ -1,5 +1,5 @@
 import express from "express";
-
+import { validateUser } from "../middlewares/AuthUser.js";
 import {
   fetchAllCustomer,
   fetchCustomer,
@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.get("/customer", fetchAllCustomer);
+router.get("/customer", validateUser, fetchAllCustomer);
 router.get("/customer/:id", fetchCustomer);
 router.post("/customer", createCustomer);
-router.patch("/customer/:id", updateCustomer);
-router.delete("/customer/:id", deleteCustomer);
+router.patch("/customer/:id", validateUser, updateCustomer);
+router.delete("/customer/:id", validateUser, deleteCustomer);
 
 export default router;
