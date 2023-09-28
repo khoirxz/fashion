@@ -2,7 +2,6 @@ import path from "path";
 import ProductModel from "../models/ProductModel.js";
 import CategoryModel from "../models/CategoryModel.js";
 import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
 
 export const fetchAllProduct = async (req, res) => {
   try {

@@ -217,4 +217,43 @@ export const updateBanner = async (req, res) => {
  * @param {*} res
  * @returns delete banners
  */
-export const deleteBanner = async (req, res) => {};
+export const deleteBanner = async (req, res) => {
+  const { id: _id } = req.params;
+  const folderPath = "../backend/public/images/banner/";
+
+  try {
+    const data = await BannerModel.findOne({ _id });
+
+    if (!data)
+      return res
+        .status(500)
+        .json({ status: "error", message: "banner not found" });
+
+    // get name image from database
+    const bannerImage = data.imageName;
+
+    // proccess delete image
+    try {
+      await fs.promises.unlink(`${folderPath}${bannerImage}`);
+      console.log(`File img banner deleted ${bannerImage}`);
+    } catch (error) {
+      throw error;
+    }
+
+    // delete item from database
+    if (req.role === "admin") {
+      await BannerModel.findByIdAndRemove(_id);
+    } else {
+      if (req.userId.toString() !== data.published.userId.toString())
+        return res
+          .status(401)
+          .json({ status: "error", message: "Unauthorize" });
+
+      await BannerModel.findByIdAndRemove(_id);
+    }
+    // send to end point
+    res.status(200).json({ status: "deleted", message: "Product deleted" });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};
