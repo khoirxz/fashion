@@ -75,7 +75,7 @@ export const createProduct = async (req, res) => {
     if (!Array.isArray(fileImage)) {
       // save img to directory (one)
       fileImage.mv(
-        `./public/images/${
+        `./public/images/products/${
           fileImage.md5 + dateSaveFile + path.extname(fileImage.name)
         }`,
         async (err) => {
@@ -86,7 +86,7 @@ export const createProduct = async (req, res) => {
       newThumbnail = [
         {
           name: fileImage.md5 + dateSaveFile + path.extname(fileImage.name),
-          url: `//${req.get("host")}/images/${
+          url: `//${req.get("host")}/images/products/${
             fileImage.md5 +
             new Date()
               .toISOString()
@@ -103,7 +103,7 @@ export const createProduct = async (req, res) => {
       // save img to directory (array)
       for (const item of fileImage) {
         item.mv(
-          `./public/images/${
+          `./public/images/products/${
             item.md5 + dateSaveFile + path.extname(item.name)
           }`,
           async (err) => {
@@ -116,7 +116,7 @@ export const createProduct = async (req, res) => {
       newThumbnail = fileImage.map((item) => {
         return {
           name: item.md5 + dateSaveFile + path.extname(item.name),
-          url: `//${req.get("host")}/images/${
+          url: `//${req.get("host")}/images/products/${
             item.md5 + dateSaveFile + path.extname(item.name)
           }`,
         };
@@ -185,6 +185,7 @@ export const updateProduct = async (req, res) => {
   let newThumbnail = [];
   console.log(fileImage ? "ada file" : "tidak ada");
   try {
+    // get data product
     const data = await ProductModel.findOne({ _id });
     // check if product exist
     if (!data)
@@ -217,7 +218,7 @@ export const updateProduct = async (req, res) => {
                 .replace(/[\s_-]+/g, "-")
                 .replace(/^-+|-+$/g, "") +
               path.extname(fileImage.name),
-            url: `//${req.get("host")}/images/${
+            url: `//${req.get("host")}/images/products/${
               fileImage.md5 +
               new Date()
                 .toISOString()
@@ -244,7 +245,7 @@ export const updateProduct = async (req, res) => {
                 .replace(/[\s_-]+/g, "-")
                 .replace(/^-+|-+$/g, "") +
               path.extname(item.name),
-            url: `//${req.get("host")}/images/${
+            url: `//${req.get("host")}/images/products/${
               item.md5 +
               new Date()
                 .toISOString()
@@ -304,6 +305,7 @@ export const updateProduct = async (req, res) => {
     };
     // role
     if (req.role === "admin") {
+      // save to database
       await ProductModel.findByIdAndUpdate(
         _id,
         { ...newData, id: _id },
@@ -315,7 +317,7 @@ export const updateProduct = async (req, res) => {
         if (!Array.isArray(fileImage)) {
           // save img to directory (one)
           fileImage.mv(
-            `./public/images/${
+            `./public/images/products/${
               fileImage.md5 +
               new Date()
                 .toISOString()
@@ -335,7 +337,7 @@ export const updateProduct = async (req, res) => {
           // save img to directory (array)
           for (const item of fileImage) {
             item.mv(
-              `./public/images/${
+              `./public/images/products/${
                 item.md5 +
                 new Date()
                   .toISOString()
@@ -377,10 +379,13 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   const { id: _id } = req.params;
 
-  const folderPath = "../backend/public/images/";
+  const folderPath = "../backend/public/images/products/";
 
   try {
     const data = await ProductModel.findOne({ _id });
+
+    if (!data)
+      return res.status(500).json({ status: "error", message: "invalid ID" });
 
     if (req.role === "admin") {
       await ProductModel.findByIdAndRemove(_id);

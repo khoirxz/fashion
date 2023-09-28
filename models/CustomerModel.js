@@ -4,6 +4,8 @@ const customerSchema = Schema({
   username: String,
   firstName: String,
   lastName: String,
+  profileImg: String,
+  active: Boolean,
   email: String,
   password: String,
   telephone: String,

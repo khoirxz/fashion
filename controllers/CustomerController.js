@@ -32,6 +32,12 @@ export const fetchCustomer = async (req, res) => {
     });
   }
 };
+/**
+ * Login route function (create Customer)
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const createCustomer = async (req, res) => {
   const {
     username,
@@ -80,6 +86,8 @@ export const createCustomer = async (req, res) => {
     firstName: firstName,
     lastName: lastName,
     email: email,
+    profileImg: "",
+    active: true,
     password: hashPassword,
     telephone: phonenumber.number,
   });

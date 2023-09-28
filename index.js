@@ -15,6 +15,7 @@ import CategoryRoute from "./routes/CategoryRoute.js";
 import AuthCustomerRoute from "./routes/AuthCustomerRoute.js";
 import CustomerRoute from "./routes/CustomerRoute.js";
 // public router
+import BannerRoute from "./routes/BannerRoute.js";
 import PublicRoute from "./routes/PublicRouter.js";
 
 dotenv.config();
@@ -52,6 +53,7 @@ app.use(CategoryRoute); //? route untuk kategori
 // customer router set
 app.use(CustomerRoute); //? route untuk customer
 app.use(AuthCustomerRoute); //? route untuk autentikasi customer
+app.use(BannerRoute);
 // public router set
 app.use(PublicRoute); //? route untuk produk publik
 app.get("/", (req, res) => {
