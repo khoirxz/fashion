@@ -14,9 +14,13 @@ import CategoryRoute from "./routes/CategoryRoute.js";
 // customer router
 import AuthCustomerRoute from "./routes/AuthCustomerRoute.js";
 import CustomerRoute from "./routes/CustomerRoute.js";
-// public router
 import BannerRoute from "./routes/BannerRoute.js";
-import PublicRoute from "./routes/PublicRouter.js";
+import AddressRoute from "./routes/AddressRoute.js";
+import CartRoute from "./routes/CartRoute.js";
+// public router
+import BannerPublicRoute from "./routes/PublicRouters/Banners.js";
+import ProductPublicRoute from "./routes/PublicRouters/Products.js";
+import CategoryPublicRoute from "./routes/PublicRouters/Categories.js";
 
 dotenv.config();
 
@@ -50,12 +54,16 @@ app.use(UserRoute); //? route untuk admin/staff
 app.use(ProductRoute); //? route untuk produk
 app.use(AuthRoute); //? route untuk login admin/staff
 app.use(CategoryRoute); //? route untuk kategori
+app.use(BannerRoute);
 // customer router set
 app.use(CustomerRoute); //? route untuk customer
 app.use(AuthCustomerRoute); //? route untuk autentikasi customer
-app.use(BannerRoute);
+app.use(AddressRoute); //? address customer
+app.use(CartRoute); //? route cart
 // public router set
-app.use(PublicRoute); //? route untuk produk publik
+app.use(BannerPublicRoute); //? banner untuk produk publik
+app.use(ProductPublicRoute); //? route untuk produk publik
+app.use(CategoryPublicRoute); //? category untuk produk publik
 app.get("/", (req, res) => {
   res.send("Hello World");
   res.end();

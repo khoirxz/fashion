@@ -9,6 +9,16 @@ const customerSchema = Schema({
   email: String,
   password: String,
   telephone: String,
+  locations: [
+    {
+      address1: String,
+      address2: String,
+      postal: Number,
+      district: String,
+      City: String,
+      Provice: String,
+    },
+  ],
   createdAt: { type: Date },
   modifiedAt: { type: Date },
 });

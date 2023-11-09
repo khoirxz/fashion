@@ -15,6 +15,6 @@ router.get("/category", validateUser, fetchAllCategory);
 router.get("/category/:id", validateUser, fetchCategory);
 router.post("/category", validateUser, createCategory);
 router.patch("/category/:id", validateUser, updateCategory);
-router.delete("/category", validateUser, deleteCategory);
+router.delete("/category/:id", validateUser, deleteCategory);
 
 export default router;

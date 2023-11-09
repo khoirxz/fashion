@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import CategoryModel from "../models/CategoryModel.js";
+import ProductModel from "../models/ProductModel.js";
 
 export const fetchAllCategory = async (req, res) => {
   try {
@@ -103,4 +104,44 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-export const deleteCategory = async (req, res) => {};
+export const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(400).json({
+      status: "error",
+      message: "something error!",
+    });
+
+  // cek apakah kategori ada
+  const category = await CategoryModel.findById(id);
+  if (!category)
+    return res.status(409).json({
+      status: "error",
+      message: "Category not found!",
+    });
+
+  // cek apakah produk berkaitan dengan kategori
+  const product = await ProductModel.find({
+    "category.categoryId": { $regex: id, $options: "i" },
+  });
+  if (product)
+    return res.status(409).json({
+      status: "error",
+      message: "delete product with same category",
+    });
+
+  try {
+    await CategoryModel.findByIdAndRemove(id);
+
+    res.status(201).json({
+      error: "success",
+      message: "category deleted",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "error",
+      message: error.message,
+    });
+  }
+};
