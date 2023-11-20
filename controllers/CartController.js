@@ -21,16 +21,23 @@ export const addCart = async (req, res) => {
   const {
     item: { productId, qty },
   } = req.body;
+
   let newData;
 
+  if (!mongoose.isValidObjectId(productId))
+    return res.status(500).json({ status: "error", message: "id tidak valid" });
+  // hanya menerima interger dan lebih besar dari 0
+  if (qty <= 0 || !Number.isInteger(qty))
+    return res.status(500).json({ status: "error", message: "lebih dari 0" });
   // console.log(req.body);
   const dataProduct = await ProductModel.findById(productId);
   if (!dataProduct)
     return res
       .status(500)
       .json({ status: "error", message: "product not found" });
-
+  // mengambil data card berdasarkan id user
   const dataCart = await CartModel.findOne({ customerId: req.customerId });
+  // jika data card tidak ada makan akan dibuat data cart baru
   if (!dataCart) {
     newData = new CartModel({
       customerId: req.customerId,
@@ -59,99 +66,106 @@ export const addCart = async (req, res) => {
       });
     }
   } else {
-    if (dataCart.item[0].productId !== productId)
-      return res.status(500).json({
-        status: "yes, buat kondisi baru",
-      });
-
-    const currentItem = dataCart.item.filter(
+    // jika ada item card sudah ada / sama maka akan update qty
+    const filterData = dataCart.item.find(
       (item) => item.productId.toString() === productId
     );
-    newData = {
-      item: [
-        {
-          productId: currentItem[0].productId,
-          thumbnail: currentItem[0].thumbnail,
-          price: currentItem[0].price,
-          qty: qty,
-        },
-      ],
-      modifiedAt: new Date().toISOString(),
-    };
-    console.log(newData);
-    // console.log(productId);
-    try {
-      const dataUpdated = await CartModel.findByIdAndUpdate(
-        dataCart._id,
-        { ...newData, id: dataCart._id },
-        { new: true }
-      );
+    if (filterData) {
+      console.log("pertama");
 
-      res.status(201).json({
-        status: "success",
-        message: dataUpdated,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: error.message,
-      });
+      try {
+        const dataUpdated = await CartModel.findByIdAndUpdate(
+          dataCart._id,
+          {
+            $set: {
+              "item.$[elem].qty": qty,
+              modifiedAt: new Date().toISOString(), // Combine both $set operations into a single object
+            },
+          },
+          {
+            new: true,
+            arrayFilters: [{ "elem.productId": productId }],
+          }
+        );
+
+        res.status(201).json({
+          status: "success",
+          message: dataUpdated,
+        });
+      } catch (error) {
+        res.status(500).json({
+          status: "error",
+          message: error.message,
+        });
+      }
+    } else {
+      // jika item cart tidak ada makan ditambahkan item cart baru
+      console.log("kedua");
+
+      newData = {
+        productId: dataProduct._id,
+        thumbnail: dataProduct.thumbnail[0].url,
+        qty: qty,
+        price: dataProduct.price,
+      };
+
+      try {
+        const dataUpdated = await CartModel.findByIdAndUpdate(
+          dataCart._id,
+          {
+            $push: {
+              item: newData,
+            },
+            $set: {
+              modifiedAt: new Date().toISOString(),
+            },
+          },
+          { new: true }
+        );
+
+        res.status(201).json({
+          status: "success",
+          message: dataUpdated,
+        });
+      } catch (error) {
+        res.status(500).json({
+          status: "error",
+          message: error.message,
+        });
+      }
     }
   }
-  // const resultFilter = dataCart.item.filter(item => item === productId)
 };
 
-// export const updateCart = async (req, res) => {
-//   const {
-//     item: { productId, qty },
-//   } = req.body;
-//   const { id } = req.params;
+export const removeCartItem = async (req, res) => {
+  const { productId } = req.body;
 
-//   if (!mongoose.isValidObjectId(id))
-//     return res.status(500).json({ status: "error", message: "id invalid" });
+  const dataCart = await CartModel.findOne({ customerId: req.customerId });
+  try {
+    const dataUpdated = await CartModel.findByIdAndUpdate(
+      dataCart._id,
+      {
+        $pull: {
+          item: { productId: productId },
+        },
+        $set: {
+          modifiedAt: new Date().toISOString(),
+        },
+      },
+      { new: true }
+    );
 
-//   const dataProduct = await ProductModel.findById(productId);
-
-//   if (!dataProduct)
-//     return res
-//       .status(500)
-//       .json({ status: "error", message: "product not found" });
-
-//   const dataCart = await CartModel.findById(id);
-//   // console.log(dataCart);
-//   if (!dataCart)
-//     return res.status(500).json({ status: "error", message: "item not found" });
-//   // const dataCart = await CartModel.findOne({ customerId: req.customerId });
-//   // const resultFilter = dataCart.item.filter(item => item === productId)
-
-//   const updatedCart = {
-//     customerId: req.customerId,
-//     item: [
-//       {
-//         qty: qty,
-//       },
-//     ],
-//     createdAt: new Date().toISOString(),
-//   };
-//   try {
-//     const dataUpdated = await CartModel.findByIdAndUpdate(
-//       id,
-//       { ...updatedCart, id: id },
-//       { new: true }
-//     );
-
-//     console.log(dataUpdated);
-//     res.status(201).json({
-//       status: "success",
-//       message: dataUpdated,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       status: "error",
-//       message: error.message,
-//     });
-//   }
-// };
+    res.status(201).json({
+      status: "success",
+      message: dataUpdated,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
 
 export const deleteCart = async (req, res) => {
   const { id } = req.params;
